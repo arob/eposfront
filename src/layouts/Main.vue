@@ -40,6 +40,14 @@
             <q-item-label>Sales</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item clickable to="/customers">
+          <q-item-section avatar>
+            <q-icon name="people" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Customers</q-item-label>
+          </q-item-section>
+        </q-item>
         <q-item clickable to="/products">
           <q-item-section avatar>
             <q-icon name="add_shopping_cart" />

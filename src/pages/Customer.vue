@@ -4,7 +4,7 @@
       <q-card-section class="q-py-sm">
           <div class="row">
             <div class="col-sm-12 col-md-12 col-xs-12">
-              <span class="text-h6">Suppliers</span>
+              <span class="text-h6">Customers</span>
               <q-btn
                 round
                 size="12px"
@@ -24,108 +24,90 @@
           <div v-show="showForm">
             <q-card flat bordered>
               <q-card-section>
-                <q-form ref="supplierForm">
+                <form ref="customerForm" @reset="resetForm">
                   <div class="row q-col-gutter-sm">
-                    <div class="col-sm4 col-md-4 col-xs-12">
+                    <div class="col-sm-5 col-md-5 col-xs-12">
                       <q-input
+                        ref="name"
                         outlined
                         dense
                         no-error-icon
-                        v-model="supplier.name"
+                        v-model="customer.name"
                         label="Name"
                         lazy-rules
                         :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
-                    <div class="col-sm4 col-md-4 col-xs-12">
+                    <div class="col-sm-3 col-md-3 col-xs-12">
                       <q-input
+                        ref="contact_number"
                         outlined
                         dense
                         no-error-icon
-                        v-model="supplier.contact_person"
-                        label="Contact Person"
-                        lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Required']"
-                      ></q-input>
-                    </div>
-                    <div class="col-sm4 col-md-4 col-xs-12">
-                      <q-input
-                        outlined
-                        dense
-                        no-error-icon
-                        v-model="supplier.contact_number"
+                        v-model="customer.contact_number"
                         label="Contact Number"
                         lazy-rules
                         :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
-                  </div>
-                  <div class="row q-col-gutter-sm q-mb-md">
-                    <div class="col-sm4 col-md-4 col-xs-12">
+                    <div class="col-sm-4 col-md-4 col-xs-12">
                       <q-input
+                        ref="email"
                         outlined
                         dense
                         no-error-icon
-                        v-model="supplier.email"
+                        v-model="customer.email"
                         label="Email"
                         lazy-rules
                       ></q-input>
                     </div>
-                    <div class="col-sm4 col-md-4 col-xs-12">
-                      <q-input
-                        outlined
-                        dense
-                        no-error-icon
-                        v-model="supplier.address"
-                        label="Address"
-                        lazy-rules
-                      ></q-input>
-                    </div>
-                    <div class="col-sm4 col-md-4 col-xs-12">
-                      <q-input
-                        outlined
-                        dense
-                        no-error-icon
-                        v-model="supplier.website"
-                        label="Website"
-                        lazy-rules
-                      ></q-input>
-                    </div>
                   </div>
                   <div class="row q-col-gutter-sm">
-                    <div class="col-sm-4 col-md-4 col-xs-12">
+                    <div class="col-sm-5 col-md-5 col-xs-12">
+                      <q-input
+                        ref="address"
+                        outlined
+                        dense
+                        no-error-icon
+                        v-model="customer.address"
+                        label="Address"
+                        lazy-rules
+                        :rules="[ val => val && val.length > 0 || 'Required']"
+                      ></q-input>
+                    </div>
+                    <div class="col-sm-3 col-md-3 col-xs-12">
                       <q-select
                         outlined
                         dense
-                        label="Thana"
-                        v-model="supplier.thana_id"
+                        label="Thana / Upazilla"
                         :options="thanas"
+                        v-model="customer.thana_id"
                         option-value="id"
                         option-label="name"
                         emit-value
                         map-options
                       />
                     </div>
-                    <div class="col-sm-4 col-md-4 col-xs-12">
+                    <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-select
                         outlined
                         dense
                         label="District"
-                        v-model="supplier.district_id"
                         :options="districts"
+                        v-model="customer.district_id"
                         option-value="id"
                         option-label="name"
                         emit-value
                         map-options
                       />
                     </div>
-                    <div class="col-sm-4 col-md-4 col-xs-12">
+                    <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-select
                         outlined
                         dense
                         label="Country"
-                        v-model="supplier.country_id"
                         :options="countries"
+                        v-model="customer.country_id"
                         option-value="id"
                         option-label="name"
                         emit-value
@@ -134,9 +116,20 @@
                     </div>
                   </div>
                   <div class="row q-col-gutter-sm">
+                    <div class="col-sm-5 col-md-5 col-xs-12">
+                      <q-input
+                        ref="name"
+                        outlined
+                        dense
+                        no-error-icon
+                        v-model="customer.reference"
+                        label="Reference"
+                        lazy-rules
+                      ></q-input>
+                    </div>
                     <div class="col-sm-4 col-md-4 col-xs-12 q-mt-sm">
                       <q-toggle
-                        v-model="supplier.status"
+                        v-model="customer.status"
                         label="Status"
                         left-label
                         color="teal"
@@ -145,29 +138,35 @@
                   </div>
                   <div class="row q-col-gutter-sm q-pl-sm q-mt-xs">
                     <q-btn
-                      @click="saveSupplier"
+                      @click="saveCustomer"
                       label="Save"
                       icon="save"
-                      type="submit"
                       color="teal"
                       class="q-mt-sm">
                     </q-btn>
+                    <q-btn
+                      label="Clear"
+                      type="reset"
+                      icon="clear_all"
+                      color="grey"
+                      class="q-mt-sm q-ml-sm">
+                    </q-btn>
                   </div>
-                </q-form>
+                </form>
               </q-card-section>
             </q-card>
           </div>
-          </q-slide-transition>
-          <q-card flat bordered>
-            <q-table
-              flat
-              title="Treats"
-              :filter="filter"
-              :data="suppliers"
-              :loading="loading"
-              :columns="tableColumns"
-              row-key="id"
-            >
+        </q-slide-transition>
+        <q-card flat bordered>
+          <q-table
+            flat
+            title="Treats"
+            :filter="filter"
+            :data="customers"
+            :loading="loading"
+            :columns="tableColumns"
+            row-key="id"
+          >
             <template v-slot:top>
               <q-input dense debounce="300" color="primary" v-model="filter">
                 <template v-slot:append>
@@ -177,11 +176,10 @@
             </template>
             <q-td slot="body-cell-update" slot-scope="props" :props="props">
               <q-btn
-                icon="edit"
                 round
+                icon="edit"
                 size="12px"
                 color="teal">
-                {{props.value}}
               </q-btn>
             </q-td>
           </q-table>
@@ -193,23 +191,23 @@
 
 <script>
 export default {
-  name: 'Supplier',
+  name: 'Customer',
   data: () => ({
     showForm: false,
-    updateMode: false,
+    updateMode: true,
     loading: false,
     filter: '',
-    suppliers: [],
-    supplier: {
+    customers: [],
+    customer: {
       name: '',
-      contact_person: '',
       contact_number: '',
       email: '',
       address: '',
       thana_id: '',
       district_id: '',
       country_id: '',
-      website: null,
+      reference: '',
+      user_id: 1,
       status: true
     },
     tableColumns: [
@@ -221,13 +219,6 @@ export default {
         sortable: true
       },
       {
-        name: 'contact_person',
-        align: 'left',
-        label: 'Contact Person',
-        field: 'contact_person',
-        sortable: true
-      },
-      {
         name: 'contact_number',
         align: 'left',
         label: 'Contact Number',
@@ -235,23 +226,16 @@ export default {
         sortable: true
       },
       {
-        name: 'email',
+        name: 'address',
         align: 'left',
-        label: 'Email',
-        field: 'email',
-        sortable: true
-      },
-      {
-        name: 'payable',
-        align: 'right',
-        type: 'number',
-        label: 'Payable',
-        field: 'payable',
+        label: 'Address',
+        field: 'address',
         sortable: true
       },
       {
         name: 'update',
         align: 'right',
+        label: 'Update',
         field: 'id'
       }
     ],
@@ -260,28 +244,26 @@ export default {
     countries: []
   }),
   methods: {
-    saveSupplier () {
-      this.$axios.post(`suppliers`, this.supplier)
+    getCustomers () {
+      this.$axios.get(`customers`)
+        .then(response => {
+          this.customers = response.data.data
+        })
+        .catch(error => {
+          console.log(error.response)
+        })
+    },
+    saveCustomer () {
+      this.$axios.post(`customers`, this.customer)
         .then(response => {
           if (response !== null) {
-            this.suppliers.push(response.data.data)
+            this.customers.push(response.data.data)
             this.$q.notify({ message: 'Save successful' })
             this.showForm = false
           } else {
             this.$q.notify({ message: 'Something went wrong' })
           }
-        },
-        error => console.log(error)
-        )
-        .catch(error => console.log(error))
-    },
-    getSuppliers () {
-      this.$axios.get(`suppliers`)
-        .then(response => {
-          this.suppliers = response.data.data
-        },
-        error => console.log(error)
-        )
+        })
         .catch(error => console.log(error))
     },
     getThanas () {
@@ -299,15 +281,14 @@ export default {
     getCountries () {
       this.$axios.get(`countries`)
         .then(response => {
-          this.countries = response.data.data
+          if (response !== null) {
+            this.countries = response.data.data
+          }
         })
+    },
+    resetForm () {
+      this.updateMode = false
     }
-  },
-  created () {
-    this.getSuppliers()
-    this.getThanas()
-    this.getDistricts()
-    this.getCountries()
   },
   computed: {
     showFormIcon () {
@@ -317,6 +298,15 @@ export default {
         return 'clear'
       }
     }
+  },
+  created () {
+    this.getCustomers()
+    this.getThanas()
+    this.getDistricts()
+    this.getCountries()
   }
 }
 </script>
+
+<style>
+</style>

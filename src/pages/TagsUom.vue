@@ -1,6 +1,14 @@
 <template>
   <q-page padding>
-    <h5 class="q-my-sm">Tags, UOM and Capacity Units</h5>
+    <q-card flat bordered>
+      <q-card-section class="q-py-sm">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-xs-12">
+              <span class="text-h6">Tags, UOM and Capacity Units</span>
+            </div>
+          </div>
+      </q-card-section>
+    </q-card>
     <div class="row q-col-gutter-sm">
       <div class="col-md-4 col-sm-4 col-xs-12">
         <q-card flat bordered>

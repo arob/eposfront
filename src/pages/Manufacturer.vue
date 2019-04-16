@@ -1,20 +1,23 @@
 <template>
   <q-page padding>
-    <div class="row q-col-gutter-sm">
-      <div class="col-sm-6 col-md-6 col-xs-12">
-        <h5 class="q-my-none">Manufacturers</h5>
-      </div>
-      <div class="col-sm-6 col-md-6 col-xs-12 text-right">
-        <q-btn
-          round
-          size="12px"
-          color="red"
-          icon="add"
-          class="q-mb-xs"
-          @click="showForm = !showForm">
-        </q-btn>
-      </div>
-    </div>
+    <q-card flat bordered>
+      <q-card-section class="q-py-sm">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-xs-12">
+              <span class="text-h6">Manufacturers</span>
+              <q-btn
+                round
+                size="12px"
+                color="red"
+                :icon="showFormIcon"
+                class="q-mb-none float-right"
+                @click="showForm = !showForm"
+              >
+              </q-btn>
+            </div>
+          </div>
+      </q-card-section>
+    </q-card>
     <div class="row q-col-gutter-sm">
       <div class="col-sm-12 col-md-12 col-xs-12">
         <q-slide-transition>
@@ -88,7 +91,7 @@
             </q-card>
           </div>
         </q-slide-transition>
-        <q-card flat bordered class="q-mt-sm">
+        <q-card flat bordered>
           <q-table
             flat
             title="Treats"
@@ -207,6 +210,15 @@ export default {
   created () {
     this.getCountries()
     this.getManufacturers()
+  },
+  computed: {
+    showFormIcon () {
+      if (this.showForm === false) {
+        return 'add'
+      } else {
+        return 'clear'
+      }
+    }
   }
 }
 </script>

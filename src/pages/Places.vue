@@ -1,137 +1,145 @@
 <template>
   <div>
     <q-page padding>
-      <h5 class="q-my-sm">Places</h5>
-        <div class="row q-col-gutter-sm">
-          <div class="col-md-4 col-sm-12 col-xs-12">
-              <q-card flat bordered>
-                <q-card-section>
-                  <q-form ref="countryForm">
-                    <div class="row q-col-gutter-sm">
-                      <div class="col-md-8  col-sm-8 col-xs-12">
-                        <q-input
-                          outlined
-                          dense
-                          no-error-icon
-                          v-model="country.name"
-                          label="Country"
-                          lazy-rules
-                          :rules="[ val => val && val.length > 0 || 'Required']"
-                        ></q-input>
-                      </div>
-                      <div class="col-md-4 col-sm-4 col-xs-12">
-                        <q-input
-                          outlined
-                          dense
-                          no-error-icon
-                          v-model="country.short_name"
-                          label="Short"
-                        ></q-input>
-                      </div>
+      <q-card flat bordered>
+        <q-card-section class="q-py-sm">
+            <div class="row">
+              <div class="col-sm-12 col-md-12 col-xs-12">
+                <span class="text-h6">Places</span>
+              </div>
+            </div>
+        </q-card-section>
+      </q-card>
+      <div class="row q-col-gutter-sm">
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <q-card flat bordered>
+              <q-card-section>
+                <q-form ref="countryForm">
+                  <div class="row q-col-gutter-sm">
+                    <div class="col-md-8  col-sm-8 col-xs-12">
+                      <q-input
+                        outlined
+                        dense
+                        no-error-icon
+                        v-model="country.name"
+                        label="Country"
+                        lazy-rules
+                        :rules="[ val => val && val.length > 0 || 'Required']"
+                      ></q-input>
                     </div>
-                    <q-btn @click="addCountry" label="Add" type="submit" color="teal"></q-btn>
-                  </q-form>
-                </q-card-section>
-                <div class="q-pt-sm">
-                  <q-table
-                    flat
-                    :data="countries"
-                    :columns="countryColumns"
-                    :loading="countryLoading"
-                    row-key="name"
+                    <div class="col-md-4 col-sm-4 col-xs-12">
+                      <q-input
+                        outlined
+                        dense
+                        no-error-icon
+                        v-model="country.short_name"
+                        label="Short"
+                      ></q-input>
+                    </div>
+                  </div>
+                  <q-btn @click="addCountry" label="Add" type="submit" color="teal"></q-btn>
+                </q-form>
+              </q-card-section>
+              <div class="q-pt-sm">
+                <q-table
+                  flat
+                  :data="countries"
+                  :columns="countryColumns"
+                  :loading="countryLoading"
+                  row-key="name"
+                >
+                <q-td slot="body-cell-update" slot-scope="props" :props="props">
+                  <q-btn
+                    @click="updateCountry(props.row)"
+                    icon="edit"
+                    round
+                    size="12px"
+                    color="teal"
                   >
+                    {{props.value}}
+                  </q-btn>
+                </q-td>
+                </q-table>
+              </div>
+            </q-card>
+        </div>
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <q-card flat bordered>
+              <q-card-section>
+                <q-form ref="districtForm">
+                  <q-input
+                    outlined
+                    dense
+                    no-error-icon
+                    v-model="district.name"
+                    label="District"
+                    lazy-rules
+                    :rules="[ val => val && val.length > 0 || 'Required']"
+                  ></q-input>
+                  <q-btn @click="addDistrict" label="Add" type="submit" color="teal"/>
+                </q-form>
+              </q-card-section>
+              <div class="q-pt-sm">
+                <q-table
+                  flat
+                  :data="districts"
+                  :loading="districtLoading"
+                  :columns="districtColumns"
+                  row-key="name"
+                >
                   <q-td slot="body-cell-update" slot-scope="props" :props="props">
                     <q-btn
-                      @click="updateCountry(props.row)"
+                      @click="updateDistrict(props.row)"
                       icon="edit"
                       round
                       size="12px"
-                      color="teal"
-                    >
+                      color="teal">
                       {{props.value}}
                     </q-btn>
                   </q-td>
-                  </q-table>
-                </div>
-              </q-card>
-          </div>
-          <div class="col-md-4 col-sm-12 col-xs-12">
-              <q-card flat bordered>
-                <q-card-section>
-                  <q-form ref="districtForm">
-                    <q-input
-                      outlined
-                      dense
-                      no-error-icon
-                      v-model="district.name"
-                      label="District"
-                      lazy-rules
-                      :rules="[ val => val && val.length > 0 || 'Required']"
-                    ></q-input>
-                    <q-btn @click="addDistrict" label="Add" type="submit" color="teal"/>
-                  </q-form>
-                </q-card-section>
-                <div class="q-pt-sm">
-                  <q-table
-                    flat
-                    :data="districts"
-                    :loading="districtLoading"
-                    :columns="districtColumns"
-                    row-key="name"
-                  >
-                    <q-td slot="body-cell-update" slot-scope="props" :props="props">
-                      <q-btn
-                        @click="updateDistrict(props.row)"
-                        icon="edit"
-                        round
-                        size="12px"
-                        color="teal">
-                        {{props.value}}
-                      </q-btn>
-                    </q-td>
-                  </q-table>
-                </div>
-              </q-card>
-          </div>
-          <div class="col-md-4 col-sm-12 col-xs-12">
-              <q-card flat bordered>
-                <q-card-section>
-                  <q-form ref="thanaForm">
-                    <q-input
-                      outlined
-                      dense
-                      no-error-icon
-                      v-model="thana.name"
-                      label="Upazilla"
-                      lazy-rules
-                      :rules="[ val => val && val.length > 0 || 'Required']"
-                    ></q-input>
-                    <q-btn @click="addThana" label="Add" type="submit" color="teal"/>
-                  </q-form>
-                </q-card-section>
-                <div class="q-pt-sm">
-                  <q-table
-                    flat
-                    :data="thanas"
-                    :loading="thanaLoading"
-                    :columns="thanaColumns"
-                    row-key="name"
-                  >
-                    <q-td slot="body-cell-update" slot-scope="props" :props="props">
-                      <q-btn
-                        @click="updateThana(props.row)"
-                        icon="edit"
-                        round
-                        size="12px"
-                        color="teal">
-                        {{props.value}}
-                      </q-btn>
-                    </q-td>
-                  </q-table>
-                </div>
-              </q-card>
-          </div>
+                </q-table>
+              </div>
+            </q-card>
         </div>
+        <div class="col-md-4 col-sm-12 col-xs-12">
+            <q-card flat bordered>
+              <q-card-section>
+                <q-form ref="thanaForm">
+                  <q-input
+                    outlined
+                    dense
+                    no-error-icon
+                    v-model="thana.name"
+                    label="Upazilla"
+                    lazy-rules
+                    :rules="[ val => val && val.length > 0 || 'Required']"
+                  ></q-input>
+                  <q-btn @click="addThana" label="Add" type="submit" color="teal"/>
+                </q-form>
+              </q-card-section>
+              <div class="q-pt-sm">
+                <q-table
+                  flat
+                  :data="thanas"
+                  :loading="thanaLoading"
+                  :columns="thanaColumns"
+                  row-key="name"
+                >
+                  <q-td slot="body-cell-update" slot-scope="props" :props="props">
+                    <q-btn
+                      @click="updateThana(props.row)"
+                      icon="edit"
+                      round
+                      size="12px"
+                      color="teal">
+                      {{props.value}}
+                    </q-btn>
+                  </q-td>
+                </q-table>
+              </div>
+            </q-card>
+        </div>
+      </div>
     </q-page>
   </div>
 </template>
@@ -244,7 +252,7 @@ export default {
       this.countryLoading = true
       this.$axios.get('countries')
         .then(response => {
-          console.log(response.data.data)
+          // console.log(response.data.data)
           this.countries = response.data.data
           this.countryLoading = false
         })
@@ -269,7 +277,7 @@ export default {
       this.districtLoading = true
       this.$axios.get('districts')
         .then(response => {
-          console.log(response.data.data)
+          // console.log(response.data.data)
           this.districts = response.data.data
           this.districtLoading = false
         })
@@ -294,7 +302,7 @@ export default {
       this.thanaLoading = true
       this.$axios.get('thanas')
         .then(response => {
-          console.log(response.data.data)
+          // console.log(response.data.data)
           this.thanas = response.data.data
           this.thanaLoading = false
         })

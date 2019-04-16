@@ -1,37 +1,42 @@
 <template>
-  <q-page padding doc-page>
-    <div class="row q-col-gutter-sm">
-      <div class="col-sm-6 col-md-6 col-xs-12">
-        <h5 class="q-my-none">Products</h5>
-      </div>
-      <div class="col-sm-6 col-md-6 col-xs-12 text-right">
-        <q-btn
-          round
-          size="12px"
-          color="red"
-          icon="add"
-          class="q-mb-sm"
-          @click="showForm = !showForm"
-        >
-        </q-btn>
-      </div>
-    </div>
+  <q-page padding>
+    <q-card flat bordered>
+      <q-card-section class="q-py-sm">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-xs-12">
+              <span class="text-h6">Products</span>
+              <q-btn
+                round
+                size="12px"
+                color="red"
+                :icon="showFormIcon"
+                class="q-mb-none float-right"
+                @click="showForm = !showForm"
+              >
+              </q-btn>
+            </div>
+          </div>
+      </q-card-section>
+    </q-card>
     <div class="row q-col-gutter-sm">
       <div class="col-sm-12 col-md-12 col-xs-12">
         <q-slide-transition>
           <div v-show="showForm">
             <q-card flat bordered>
               <q-card-section>
-                <q-form ref="productForm">
-                  <div class="row q-col-gutter-sm">
+                <q-form ref="productForm" @reset="resetForm">
+                  <div class="row q-col-gutter-sm  q-mb-sm">
                     <div class="col-sm-3 col-md-3 col-xs-12">
                       <q-input
+                        ref="code"
                         outlined
                         dense
                         no-error-icon
                         v-model="product.code"
                         label="Code"
                         lazy-rules
+                        :error="codeErrorStatus"
+                        :error-message="product.codeError"
                         :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
@@ -44,6 +49,8 @@
                         v-model="product.name"
                         label="Name"
                         lazy-rules
+                        :error="nameErrorStatus"
+                        :error-message="product.nameError"
                         :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
@@ -55,23 +62,25 @@
                         v-model="product.model"
                         label="Model"
                         lazy-rules
+                        :error="modelErrorStatus"
+                        :error-message="product.modelError"
                         :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-input
+                        required
                         outlined
                         dense
                         no-error-icon
                         v-model="product.sales_rate"
                         type="number"
                         label="Rate"
-                        lazy-rules
                         :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
                   </div>
-                  <div class="row q-col-gutter-sm">
+                  <div class="row q-col-gutter-sm q-mb-md">
                     <div class="col-sm-8 col-md-8 col-xs-12">
                       <q-input
                         outlined
@@ -80,7 +89,6 @@
                         v-model="product.description"
                         label="Description"
                         lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
@@ -92,7 +100,6 @@
                         type="number"
                         label="Re-order Level"
                         lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
@@ -104,11 +111,10 @@
                         type="number"
                         label="Warranty (Months)"
                         lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
                   </div>
-                  <div class="row q-col-gutter-sm">
+                  <div class="row q-col-gutter-sm q-mb-md">
                     <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-input
                         outlined
@@ -118,7 +124,6 @@
                         type="number"
                         label="Discount (%)"
                         lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
@@ -130,7 +135,6 @@
                         type="number"
                         label="VAT (%)"
                         lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
@@ -142,7 +146,6 @@
                         type="number"
                         label="Tax (%)"
                         lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
@@ -154,7 +157,6 @@
                         type="number"
                         label="Size / Capacity"
                         lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
@@ -239,7 +241,6 @@
                         @click="saveProduct"
                         icon="save"
                         label="Save"
-                        type="submit"
                         color="teal"
                         class="q-mt-sm">
                       </q-btn>
@@ -257,7 +258,7 @@
             </q-card>
           </div>
         </q-slide-transition>
-        <q-card flat bordered class="q-mt-xs">
+        <q-card flat bordered>
           <q-table
             flat
             title="Treats"
@@ -301,8 +302,11 @@ export default {
     products: [],
     product: {
       code: '',
+      codeError: '',
       name: '',
+      nameError: '',
       model: '',
+      modelError: '',
       capacity: '',
       capacity_unit_id: '',
       uom_id: '',
@@ -363,29 +367,48 @@ export default {
   }),
   methods: {
     getProducts () {
+      this.loading = true
       this.$axios.get(`products`)
         .then(response => {
           if (response !== null) {
             this.products = response.data.data
+            this.loading = false
           }
         },
-        error => console.log(error)
-        )
+        error => {
+          console.log(error)
+        }
+        ).catch(error => console.log(error))
     },
     saveProduct () {
-      console.log(this.product)
       this.$axios.post(`products`, this.product)
         .then(response => {
           if (response !== null) {
             console.log(response.data.data)
             this.products.push(response.data.data)
+            this.$q.notify({
+              message: 'Save successfull!',
+              position: 'top-right',
+              color: 'green'
+            })
+            this.resetForm()
           }
-        },
-        error => console.log(error)
+        }
         )
+        .catch(error => {
+          if (error.response) {
+            console.log(error)
+            // this.product.codeError = error.response.data.errors['code'][0]
+            // this.product.nameError = error.response.data.errors['name'][0]
+            // this.product.modelError = error.response.data.errors['model'][0]
+          }
+        })
     },
     resetForm () {
-      this.refs.productForm.reset()
+      this.product.codeError = ''
+      this.product.nameError = ''
+      this.product.modelError = ''
+      // this.$refs.productForm.reset()
     },
     getSuppliers () {
       this.$axios.get(`suppliers`)
@@ -435,6 +458,24 @@ export default {
     this.getSuppliers()
     this.getManufacturers()
     this.getCountries()
+  },
+  computed: {
+    codeErrorStatus () {
+      return this.product.codeError !== ''
+    },
+    nameErrorStatus () {
+      return this.product.nameError !== ''
+    },
+    modelErrorStatus () {
+      return this.product.modelError !== ''
+    },
+    showFormIcon () {
+      if (this.showForm === false) {
+        return 'add'
+      } else {
+        return 'clear'
+      }
+    }
   }
 }
 </script>
