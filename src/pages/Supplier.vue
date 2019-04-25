@@ -1,28 +1,10 @@
 <template>
   <q-page padding>
-    <q-card flat bordered>
-      <q-card-section class="q-py-sm">
-          <div class="row">
-            <div class="col-sm-12 col-md-12 col-xs-12">
-              <span class="text-h6">Suppliers</span>
-              <q-btn
-                round
-                size="12px"
-                color="red"
-                :icon="showFormIcon"
-                class="q-mb-none float-right"
-                @click="showForm = !showForm"
-              >
-              </q-btn>
-            </div>
-          </div>
-      </q-card-section>
-    </q-card>
     <div class="row q-col-gutter-sm">
       <div class="col-sm-12 col-md-12 col-xs-12">
         <q-slide-transition>
           <div v-show="showForm">
-            <q-card flat bordered>
+            <q-card flat bordered class="q-pt-sm">
               <q-card-section>
                 <q-form ref="supplierForm">
                   <div class="row q-col-gutter-sm">
@@ -104,7 +86,11 @@
                         option-label="name"
                         emit-value
                         map-options
-                      />
+                      >
+                        <template v-slot:after>
+                          <q-btn icon="add" dense outlined color="teal"></q-btn>
+                        </template>
+                      </q-select>
                     </div>
                     <div class="col-sm-4 col-md-4 col-xs-12">
                       <q-select
@@ -161,19 +147,30 @@
           <q-card flat bordered>
             <q-table
               flat
-              title="Treats"
               :filter="filter"
               :data="suppliers"
               :loading="loading"
               :columns="tableColumns"
               row-key="id"
             >
-            <template v-slot:top>
+            <template v-slot:top-left>
+              <span class="text-h6">Suppliers</span>
+            </template>
+            <template v-slot:top-right>
               <q-input dense debounce="300" color="primary" v-model="filter">
                 <template v-slot:append>
                   <q-icon name="search" />
                 </template>
               </q-input>
+              <q-btn
+                round
+                size="12px"
+                color="red"
+                :icon="showFormIcon"
+                class="q-ml-md float-right"
+                @click="showForm = !showForm"
+              >
+              </q-btn>
             </template>
             <q-td slot="body-cell-update" slot-scope="props" :props="props">
               <q-btn

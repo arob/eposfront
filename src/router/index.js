@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Autocomplete from 'v-autocomplete'
 
 import routes from './routes'
 
 Vue.use(VueRouter)
+Vue.use(Autocomplete)
 
 /*
  * If not building with SSR mode, you can

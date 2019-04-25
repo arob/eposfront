@@ -1,28 +1,10 @@
 <template>
   <q-page padding>
-    <q-card flat bordered>
-      <q-card-section class="q-py-sm">
-          <div class="row">
-            <div class="col-sm-12 col-md-12 col-xs-12">
-              <span class="text-h6">Customers</span>
-              <q-btn
-                round
-                size="12px"
-                color="red"
-                :icon="showFormIcon"
-                class="q-mb-none float-right"
-                @click="showForm = !showForm"
-              >
-              </q-btn>
-            </div>
-          </div>
-      </q-card-section>
-    </q-card>
     <div class="row q-col-gutter-sm">
       <div class="col-sm-12 col-md-12 col-xs-12">
         <q-slide-transition>
           <div v-show="showForm">
-            <q-card flat bordered>
+            <q-card flat bordered class="q-pt-sm">
               <q-card-section>
                 <form ref="customerForm" @reset="resetForm">
                   <div class="row q-col-gutter-sm">
@@ -160,19 +142,31 @@
         <q-card flat bordered>
           <q-table
             flat
-            title="Treats"
+            wrap-cells
             :filter="filter"
             :data="customers"
             :loading="loading"
             :columns="tableColumns"
             row-key="id"
           >
-            <template v-slot:top>
+            <template v-slot:top-left>
+              <span class="text-h6">Customers</span>
+            </template>
+            <template v-slot:top-right>
               <q-input dense debounce="300" color="primary" v-model="filter">
                 <template v-slot:append>
                   <q-icon name="search" />
                 </template>
               </q-input>
+              <q-btn
+                round
+                size="12px"
+                color="red"
+                :icon="showFormIcon"
+                class="q-mb-none q-ml-md float-right"
+                @click="showForm = !showForm"
+              >
+              </q-btn>
             </template>
             <q-td slot="body-cell-update" slot-scope="props" :props="props">
               <q-btn
@@ -245,9 +239,11 @@ export default {
   }),
   methods: {
     getCustomers () {
+      this.loading = true
       this.$axios.get(`customers`)
         .then(response => {
           this.customers = response.data.data
+          this.loading = false
         })
         .catch(error => {
           console.log(error.response)

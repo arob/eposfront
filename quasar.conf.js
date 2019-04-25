@@ -50,7 +50,8 @@ module.exports = function (ctx) {
         'QTr',
         'QTd',
         'QSelect',
-        'QToggle'
+        'QToggle',
+        'QDate'
       ],
 
       directives: [

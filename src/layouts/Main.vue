@@ -17,6 +17,7 @@
       </q-toolbar>
     </q-header>
     <q-drawer
+      :width="260"
       v-model="leftDrawerOpen"
       bordered
       content-class="bg-grey-4"
@@ -56,6 +57,14 @@
             <q-item-label>Products</q-item-label>
           </q-item-section>
         </q-item>
+        <q-item clickable to="/purchase-invoice">
+          <q-item-section avatar>
+            <q-icon name="local_shipping" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Purchase Invoice</q-item-label>
+          </q-item-section>
+        </q-item>
         <q-item clickable to="/suppliers">
           <q-item-section avatar>
             <q-icon name="local_shipping" />
@@ -86,6 +95,14 @@
           </q-item-section>
           <q-item-section>
             <q-item-label>Places</q-item-label>
+          </q-item-section>
+        </q-item>
+        <q-item clickable to="/experiments">
+          <q-item-section avatar>
+            <q-icon name="place" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Experiments</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
