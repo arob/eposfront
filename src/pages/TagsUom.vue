@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page>
     <q-card flat bordered>
       <q-card-section class="q-py-sm">
           <div class="row">
@@ -9,166 +9,147 @@
           </div>
       </q-card-section>
     </q-card>
-    <div class="row q-col-gutter-sm">
+    <div class="row q-col-gutter-none">
       <div class="col-md-4 col-sm-4 col-xs-12">
         <q-card flat bordered>
           <q-card-section>
             <q-form ref="tagsForm">
               <div class="row q-col-gutter-sm">
-                <div class="col-md-12 col-sm-4 col-sx-12">
-                  <q-input
-                    outlined
-                    dense
-                    no-error-icon
+                <div class="col-12">
+                  <q-input dense no-error-icon
                     v-model="tag.name"
                     label="Tag"
                     lazy-rules
                     :rules="[ val => val && val.length > 0 || 'Required']"
-                  ></q-input>
-                </div>
-                <div class="col-md-12">
-                  <q-btn @click="saveTag" label="Add" type="submit" color="teal"></q-btn>
+                  >
+                    <template v-slot:after>
+                      <q-btn dense @click="saveTag"
+                        icon="add" type="submit" color="primary">
+                      </q-btn>
+                    </template>
+                  </q-input>
                 </div>
               </div>
             </q-form>
           </q-card-section>
-          <div class="q-pt-sm">
-              <q-table
-                flat
-                :data="tags"
-                :loading="tagsLoading"
-                :columns="tagColumns"
-                row-key="name"
+            <q-table
+              flat
+              :data="tags"
+              :loading="tagsLoading"
+              :columns="tagColumns"
+              :pagination.sync="pagination"
+              row-key="name"
               >
               <q-td slot="body-cell-update" slot-scope="props" :props="props">
-                <q-btn
-                  icon="edit"
-                  round
-                  size="12px"
-                  color="teal"
-                >
-                  {{props.value}}
-                </q-btn>
+                <q-btn  round icon="mdi-square-edit-outline" size="12px"
+                  color="primary"
+                ></q-btn>
               </q-td>
-              </q-table>
-            </div>
+            </q-table>
         </q-card>
       </div>
       <div class="col-md-4 col-sm-4 col-xs-12">
         <q-card flat bordered>
           <q-card-section>
-            <q-form ref="tagsForm">
+            <q-form ref="uomForm">
               <div class="row q-col-gutter-sm">
-                <div class="col-md-12 col-sm-4 col-sx-12">
+                <div class="col-sm-12 col-md-12 col-sx-12">
                   <div class="row q-col-gutter-sm">
-                    <div class="col-md-8">
-                      <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                    <div class="col-sm-7 col-md-7 col-xs-12">
+                      <q-input dense no-error-icon
                         v-model="uom.name"
                         label="Measurement unit"
                         lazy-rules
                         :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
-                    <div class="col-md-4">
-                      <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                    <div class="col-sm-5 col-md-5 col-xs-12">
+                      <q-input dense no-error-icon
                         v-model="uom.short_name"
                         label="Short"
                         lazy-rules
                         :rules="[ val => val && val.length > 0 || 'Required']"
-                      ></q-input>
+                      >
+                        <template v-slot:after>
+                          <q-btn dense @click="saveUom"
+                            icon="add" type="submit" color="primary">
+                          </q-btn>
+                        </template>
+                      </q-input>
                     </div>
                   </div>
-                </div>
-                <div class="col-md-12">
-                  <q-btn @click="saveUom" label="Add" type="submit" color="teal"></q-btn>
                 </div>
               </div>
             </q-form>
           </q-card-section>
-          <div class="q-pt-sm">
-              <q-table
-                flat
-                :data="uoms"
-                :loading="uomsLoading"
-                :columns="uomColumns"
-              >
-              <q-td slot="body-cell-update" slot-scope="props" :props="props">
-                <q-btn
-                  icon="edit"
-                  round
-                  size="12px"
-                  color="teal"
-                >
-                  {{props.value}}
-                </q-btn>
-              </q-td>
-              </q-table>
-            </div>
+            <q-table
+              flat
+              :data="uoms"
+              :loading="uomsLoading"
+              :columns="tableColumns"
+              :pagination.sync="pagination"
+              row-key="uoms"
+            >
+            <q-td slot="body-cell-update" slot-scope="props" :props="props">
+              <q-btn
+                icon="mdi-square-edit-outline"
+                round size="12px"
+                color="primary">
+              </q-btn>
+            </q-td>
+          </q-table>
         </q-card>
       </div>
       <div class="col-md-4 col-sm-4 col-xs-12">
         <q-card flat bordered>
           <q-card-section>
-            <q-form ref="sizeUnitForm">
+            <q-form ref="capacityUnitForm">
               <div class="row q-col-gutter-sm">
-                <div class="col-md-12 col-sm-4 col-sx-12">
+                <div class="col-sm-12 col-md-12 col-sx-12">
                   <div class="row q-col-gutter-sm">
-                    <div class="col-sm-8 col-md-8 col-xs-12">
-                      <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                    <div class="col-sm-7 col-md-7 col-xs-12">
+                      <q-input dense no-error-icon
                         v-model="sizeUnit.name"
                         label="Capacity unit"
                         lazy-rules
                         :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
-                    <div class="col-sm-4 col-md-4 col-xs-12">
-                      <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                    <div class="col-sm-5 col-md-5 col-xs-12">
+                      <q-input dense no-error-icon
                         v-model="sizeUnit.short_name"
                         label="Short"
                         lazy-rules
                         :rules="[ val => val && val.length > 0 || 'Required']"
-                      ></q-input>
+                      >
+                        <template v-slot:after>
+                          <q-btn dense @click="saveCapacityUnit"
+                            icon="add" type="submit" color="primary">
+                          </q-btn>
+                        </template>
+                      </q-input>
                     </div>
                   </div>
-                </div>
-                <div class="col-md-12">
-                  <q-btn @click="saveSizeUnit" label="Add" type="submit" color="teal"></q-btn>
                 </div>
               </div>
             </q-form>
           </q-card-section>
-          <div class="q-pt-sm">
-              <q-table
-                flat
-                :data="sizeUnits"
-                :columns="sizeUnitColumns"
-                :loading="sizeUnitsLoading"
-                row-key="name"
-              >
-              <q-td slot="body-cell-update" slot-scope="props" :props="props">
-                <q-btn
-                  icon="edit"
-                  round
-                  size="12px"
-                  color="teal"
-                >
-                  {{props.value}}
-                </q-btn>
-              </q-td>
-              </q-table>
-            </div>
+          <q-table
+            flat
+            :data="capacityUnits"
+            :columns="tableColumns"
+            :loading="capacityUnitsLoading"
+            :pagination.sync="pagination"
+            row-key="id"
+            >
+            <q-td slot="body-cell-update" slot-scope="props" :props="props">
+              <q-btn
+                icon="mdi-square-edit-outline"
+                round size="12px"
+                color="primary">
+              </q-btn>
+            </q-td>
+          </q-table>
         </q-card>
       </div>
     </div>
@@ -177,7 +158,7 @@
 
 <script>
 export default {
-  name: 'Tags',
+  name: 'TagUom',
   data () {
     return {
       tag: {
@@ -187,19 +168,8 @@ export default {
       tagUpdate: false,
       tagsLoading: false,
       tagColumns: [
-        {
-          name: 'name',
-          align: 'left',
-          label: 'Tag',
-          field: 'name',
-          sortable: true
-        },
-        {
-          name: 'update',
-          align: 'right',
-          label: 'Update',
-          field: 'id'
-        }
+        { name: 'name', align: 'left', label: 'Tag', field: 'name', sortable: true },
+        { name: 'update', align: 'right', label: 'Update', field: 'id' }
       ],
       uom: {
         name: '',
@@ -208,57 +178,21 @@ export default {
       uoms: [],
       uomUpdate: false,
       uomsLoading: false,
-      uomColumns: [
-        {
-          name: 'name',
-          align: 'left',
-          label: 'UOM',
-          field: 'name',
-          sortable: true
-        },
-        {
-          name: 'short_name',
-          align: 'left',
-          label: 'Short Name',
-          field: 'short_name',
-          sortable: true
-        },
-        {
-          name: 'update',
-          align: 'right',
-          label: 'Update',
-          field: 'id'
-        }
+      tableColumns: [
+        { name: 'name', align: 'left', label: 'Unit Name', field: 'name', sortable: true },
+        { name: 'short_name', align: 'left', label: 'Short', field: 'short_name', sortable: true },
+        { name: 'update', align: 'right', label: 'Update', field: 'id' }
       ],
       sizeUnit: {
         name: '',
         short_name: ''
       },
-      sizeUnits: [],
-      sizeUnitUpdate: false,
-      sizeUnitsLoading: false,
-      sizeUnitColumns: [
-        {
-          name: 'name',
-          align: 'left',
-          label: 'Unit Name',
-          field: 'name',
-          sortable: true
-        },
-        {
-          name: 'short_name',
-          align: 'left',
-          label: 'Short Name',
-          field: 'short_name',
-          sortable: true
-        },
-        {
-          name: 'update',
-          align: 'right',
-          label: 'Update',
-          field: 'id'
-        }
-      ]
+      capacityUnits: [],
+      capacityUnitUpdate: false,
+      capacityUnitsLoading: false,
+      pagination: {
+        rowsPerPage: 7
+      }
     }
   },
   methods: {
@@ -304,24 +238,24 @@ export default {
         })
         .catch(error => console.log(error))
     },
-    saveSizeUnit () {
-      this.$axios.post(`size-units`, this.sizeUnit)
+    saveCapacityUnit () {
+      this.$axios.post(`capacity-units`, this.sizeUnit)
         .then((response) => {
           console.log(response)
-          this.sizeUnits.push(response.data.data)
-          this.sizeUnitUpdate = false
-          this.$refs.sizeUnitForm.reset()
+          this.capacityUnits.push(response.data.data)
+          this.capacityUnitUpdate = false
+          this.$refs.capacityUnitForm.reset()
         })
         .catch(error => {
           console.log(error)
         })
     },
-    getSizeUnits () {
-      this.sizeUnitsLoading = true
+    getCapacityUnits () {
+      this.capacityUnit = true
       this.$axios.get(`capacity-units`)
         .then(response => {
-          this.sizeUnits = response.data.data
-          this.sizeUnitsLoading = false
+          this.capacityUnits = response.data.data
+          this.capacityUnitsLoading = false
         })
         .catch(error => console.log(error))
     }
@@ -329,7 +263,7 @@ export default {
   created () {
     this.getTags()
     this.getUoms()
-    this.getSizeUnits()
+    this.getCapacityUnits()
   }
 }
 </script>

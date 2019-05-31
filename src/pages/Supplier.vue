@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page>
     <div class="row q-col-gutter-sm">
       <div class="col-sm-12 col-md-12 col-xs-12">
         <q-slide-transition>
@@ -8,66 +8,122 @@
               <q-card-section>
                 <q-form ref="supplierForm">
                   <div class="row q-col-gutter-sm">
-                    <div class="col-sm4 col-md-4 col-xs-12">
+                    <div class="col-sm-4 col-md-4 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
                         v-model="supplier.name"
-                        label="Name"
+                        label="Name *"
                         lazy-rules
                         :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
-                    <div class="col-sm4 col-md-4 col-xs-12">
+                    <div class="col-sm-4 col-md-4 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
                         v-model="supplier.contact_person"
-                        label="Contact Person"
+                        label="Contact Person *"
                         lazy-rules
                         :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
-                    <div class="col-sm4 col-md-4 col-xs-12">
+                    <div class="col-sm-4 col-md-4 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
                         v-model="supplier.contact_number"
-                        label="Contact Number"
+                        label="Contact Number *"
                         lazy-rules
                         :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
                   </div>
-                  <div class="row q-col-gutter-sm q-mb-md">
-                    <div class="col-sm4 col-md-4 col-xs-12">
+                  <div class="row q-col-gutter-sm">
+                    <div class="col-sm-4 col-md-4 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
-                        v-model="supplier.email"
-                        label="Email"
-                        lazy-rules
-                      ></q-input>
-                    </div>
-                    <div class="col-sm4 col-md-4 col-xs-12">
-                      <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
                         v-model="supplier.address"
                         label="Address"
                         lazy-rules
                       ></q-input>
                     </div>
-                    <div class="col-sm4 col-md-4 col-xs-12">
-                      <q-input
-                        outlined
+                    <div class="col-sm-4 col-md-4 col-xs-12">
+                      <q-select
                         dense
-                        no-error-icon
+                        label="Thana"
+                        v-model="supplier.thana_id"
+                        :options="thanas"
+                        option-value="id"
+                        option-label="name"
+                        emit-value map-options
+                      >
+                        <template v-slot:append>
+                          <q-btn flat icon="refresh" dense outlined tabindex="0"
+                            color="grey" @click="getThanas">
+                          </q-btn>
+                        </template>
+                        <template v-slot:after>
+                          <q-btn icon="add" dense outline
+                            color="primary">
+                          </q-btn>
+                        </template>
+                      </q-select>
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-xs-12">
+                      <q-select
+                        dense
+                        label="District"
+                        v-model="supplier.district_id"
+                        :options="districts"
+                        option-value="id"
+                        option-label="name"
+                        emit-value map-options
+                      >
+                        <template v-slot:append>
+                          <q-btn flat icon="refresh" dense
+                            outlined color="grey"
+                            @click="getDistricts">
+                          </q-btn>
+                        </template>
+                        <template v-slot:after>
+                          <q-btn icon="add" dense outline
+                            color="primary">
+                          </q-btn>
+                        </template>
+                      </q-select>
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-xs-12">
+                      <q-select
+                        dense
+                        label="Country"
+                        v-model="supplier.country_id"
+                        :options="countries"
+                        option-value="id"
+                        option-label="name"
+                        emit-value map-options
+                      >
+                      <template v-slot:append>
+                          <q-btn flat icon="refresh"
+                            dense outlined color="grey"
+                            @click="getCountries">
+                          </q-btn>
+                        </template>
+                        <template v-slot:after>
+                          <q-btn icon="add" dense outline
+                            color="primary">
+                          </q-btn>
+                        </template>
+                      </q-select>
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-xs-12">
+                      <q-input
+                        dense no-error-icon
+                        v-model="supplier.email"
+                        label="Email"
+                        lazy-rules
+                      ></q-input>
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-xs-12">
+                      <q-input
+                        dense no-error-icon
                         v-model="supplier.website"
                         label="Website"
                         lazy-rules
@@ -75,68 +131,23 @@
                     </div>
                   </div>
                   <div class="row q-col-gutter-sm">
-                    <div class="col-sm-4 col-md-4 col-xs-12">
-                      <q-select
-                        outlined
-                        dense
-                        label="Thana"
-                        v-model="supplier.thana_id"
-                        :options="thanas"
-                        option-value="id"
-                        option-label="name"
-                        emit-value
-                        map-options
-                      >
-                        <template v-slot:after>
-                          <q-btn icon="add" dense outlined color="teal"></q-btn>
-                        </template>
-                      </q-select>
-                    </div>
-                    <div class="col-sm-4 col-md-4 col-xs-12">
-                      <q-select
-                        outlined
-                        dense
-                        label="District"
-                        v-model="supplier.district_id"
-                        :options="districts"
-                        option-value="id"
-                        option-label="name"
-                        emit-value
-                        map-options
-                      />
-                    </div>
-                    <div class="col-sm-4 col-md-4 col-xs-12">
-                      <q-select
-                        outlined
-                        dense
-                        label="Country"
-                        v-model="supplier.country_id"
-                        :options="countries"
-                        option-value="id"
-                        option-label="name"
-                        emit-value
-                        map-options
-                      />
-                    </div>
-                  </div>
-                  <div class="row q-col-gutter-sm">
                     <div class="col-sm-4 col-md-4 col-xs-12 q-mt-sm">
                       <q-toggle
                         v-model="supplier.status"
-                        label="Status"
-                        left-label
-                        color="teal"
+                        label="Status" left-label color="primary"
                       ></q-toggle>
                     </div>
                   </div>
                   <div class="row q-col-gutter-sm q-pl-sm q-mt-xs">
                     <q-btn
                       @click="saveSupplier"
-                      label="Save"
-                      icon="save"
-                      type="submit"
-                      color="teal"
-                      class="q-mt-sm">
+                      label="Save" icon="save"
+                      color="primary" class="q-mt-sm">
+                    </q-btn>
+                    <q-btn
+                      @click="clearForm"
+                      label="Clear" icon="clear_all"
+                      color="grey" class="q-mt-sm q-ml-sm">
                     </q-btn>
                   </div>
                 </q-form>
@@ -144,7 +155,7 @@
             </q-card>
           </div>
           </q-slide-transition>
-          <q-card flat bordered>
+          <q-card flat>
             <q-table
               flat
               :filter="filter"
@@ -152,6 +163,7 @@
               :loading="loading"
               :columns="tableColumns"
               row-key="id"
+              :pagination.sync="pagination"
             >
             <template v-slot:top-left>
               <span class="text-h6">Suppliers</span>
@@ -163,23 +175,26 @@
                 </template>
               </q-input>
               <q-btn
-                round
-                size="12px"
-                color="red"
-                :icon="showFormIcon"
-                class="q-ml-md float-right"
-                @click="showForm = !showForm"
-              >
+                round size="12px" color="red"
+                :icon="showFormIcon" class="q-ml-md float-right"
+                @click="showForm = !showForm">
               </q-btn>
             </template>
             <q-td slot="body-cell-update" slot-scope="props" :props="props">
-              <q-btn
-                icon="edit"
-                round
-                size="12px"
-                color="teal">
-                {{props.value}}
-              </q-btn>
+              <q-btn-group>
+                <q-btn
+                  dense color="primary" icon="visibility"
+                  class="q-px-sm"
+                  :to="{name: 'supplier-detail', params: {id: props.value}}"
+                />
+                <q-btn
+                  dense color="secondary"
+                  icon="mdi-square-edit-outline"
+                  class="q-px-sm"
+                  @click="updateSupplier(props.row)"
+                >
+                </q-btn>
+              </q-btn-group>
             </q-td>
           </q-table>
         </q-card>
@@ -201,22 +216,17 @@ export default {
       name: '',
       contact_person: '',
       contact_number: '',
-      email: '',
       address: '',
       thana_id: '',
       district_id: '',
       country_id: '',
-      website: null,
-      status: true
+      email: '',
+      website: '',
+      status: true,
+      user_id: 1
     },
     tableColumns: [
-      {
-        name: 'name',
-        align: 'left',
-        label: 'Name',
-        field: 'name',
-        sortable: true
-      },
+      { name: 'name', align: 'left', label: 'Name', field: 'name', sortable: true },
       {
         name: 'contact_person',
         align: 'left',
@@ -231,30 +241,15 @@ export default {
         field: 'contact_number',
         sortable: true
       },
-      {
-        name: 'email',
-        align: 'left',
-        label: 'Email',
-        field: 'email',
-        sortable: true
-      },
-      {
-        name: 'payable',
-        align: 'right',
-        type: 'number',
-        label: 'Payable',
-        field: 'payable',
-        sortable: true
-      },
-      {
-        name: 'update',
-        align: 'right',
-        field: 'id'
-      }
+      { name: 'email', align: 'left', label: 'Email', field: 'email', sortable: true },
+      { name: 'update', align: 'right', field: 'id' }
     ],
     thanas: [],
     districts: [],
-    countries: []
+    countries: [],
+    pagination: {
+      rowsPerPage: 10
+    }
   }),
   methods: {
     saveSupplier () {
@@ -262,8 +257,13 @@ export default {
         .then(response => {
           if (response !== null) {
             this.suppliers.push(response.data.data)
-            this.$q.notify({ message: 'Save successful' })
-            this.showForm = false
+            this.$q.notify({
+              color: 'green',
+              textColor: 'white',
+              position: 'bottom-left',
+              message: 'Save successful'
+            })
+            this.clearForm()
           } else {
             this.$q.notify({ message: 'Something went wrong' })
           }
@@ -298,6 +298,33 @@ export default {
         .then(response => {
           this.countries = response.data.data
         })
+    },
+    clearForm () {
+      this.supplier.name = ''
+      this.supplier.contact_person = ''
+      this.supplier.contact_number = ''
+      this.supplier.address = ''
+      this.supplier.thana_id = ''
+      this.supplier.district_id = ''
+      this.supplier.country_id = ''
+      this.supplier.email = ''
+      this.supplier.website = ''
+      this.$refs.supplierForm.resetValidation()
+    },
+    updateSupplier (supplier) {
+      console.log(supplier)
+      // this.updateMode = true
+      // this.showForm = true
+      // this.supplier.id = supplier.id
+      // this.supplier.name = supplier.name
+      // this.supplier.contact_person = supplier.contact_person
+      // this.supplier.contact_number = supplier.contact_number
+      // this.supplier.address = supplier.address
+      // this.supplier.thana_id = supplier.thana_id
+      // this.supplier.district_id = supplier.district_id
+      // this.supplier.country_id = supplier.country_id
+      // this.supplier.email = supplier.email
+      // this.supplier.website = supplier.website
     }
   },
   created () {

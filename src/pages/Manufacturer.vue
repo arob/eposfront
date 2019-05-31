@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page>
     <div class="row q-col-gutter-sm">
       <div class="col-sm-12 col-md-12 col-xs-12">
         <q-slide-transition>
@@ -10,9 +10,7 @@
                   <div class="row q-col-gutter-sm">
                     <div class="col-sm-4 col-md-4 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
                         v-model="manufacturer.name"
                         label="Name"
                         lazy-rules
@@ -21,9 +19,7 @@
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense o-error-icon
                         v-model="manufacturer.short_name"
                         label="Short Name"
                         lazy-rules
@@ -31,9 +27,7 @@
                     </div>
                     <div class="col-sm-3 col-md-3 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
                         v-model="manufacturer.website"
                         label="Website"
                         lazy-rules
@@ -41,32 +35,30 @@
                     </div>
                     <div class="col-sm-3 col-md-3 col-xs-12">
                       <q-select
-                        outlined
-                        dense
+                        dense use-input no-error-icon
                         label="Country"
                         v-model="manufacturer.country_id"
-                        :options="countries"
+                        :options="countryOptions"
                         option-value="id"
                         option-label="name"
                         option-disable="inactive"
-                        emit-value
-                        map-options
+                        emit-value map-options
+                        input-debounce="0"
+                        @filter="filterCountries"
                       />
                     </div>
                     <div class="col-sm2 col-md-2 col-xs-12">
                       <q-toggle
                         v-model="manufacturer.status"
                         label="Status"
-                        left-label
-                        color="teal"
+                        left-label color="primary"
                       ></q-toggle>
                     </div>
                   </div>
-                  <q-btn @click="saveManufacturer"
-                    label="Save"
-                    type="submit"
-                    color="teal"
-                    class="q-mt-sm">
+                  <q-btn
+                    @click="saveManufacturer"
+                    label="Save" type="submit"
+                    color="primary" class="q-mt-sm">
                   </q-btn>
                 </q-form>
               </q-card-section>
@@ -80,6 +72,7 @@
             :data="manufacturers"
             :loading="loading"
             :columns="tableColumns"
+            :pagination.sync="pagination"
             row-key="id"
           >
             <template v-slot:top-left>
@@ -92,9 +85,7 @@
                 </template>
               </q-input>
               <q-btn
-                round
-                size="12px"
-                color="red"
+                round size="12px" color="red"
                 :icon="showFormIcon"
                 class="q-mb-none q-ml-md float-right"
                 @click="showForm = !showForm"
@@ -102,13 +93,19 @@
               </q-btn>
             </template>
             <q-td slot="body-cell-update" slot-scope="props" :props="props">
-              <q-btn
-                icon="edit"
-                round
-                size="12px"
-                color="teal">
-                {{props.value}}
-              </q-btn>
+              <q-btn-group>
+                <q-btn
+                  dense color="primary" icon="visibility"
+                  class="q-px-sm"
+                  :to="{name: 'manufacturer-detail', params: {id: props.value}}"
+                />
+                <q-btn
+                  dense color="secondary"
+                  icon="mdi-square-edit-outline"
+                  class="q-px-sm"
+                >
+                </q-btn>
+              </q-btn-group>
             </q-td>
           </q-table>
         </q-card>
@@ -130,45 +127,21 @@ export default {
       name: '',
       short_name: '',
       country_id: '',
-      status: true
-      // user_id: ''
+      status: true,
+      user_id: 1
     },
     tableColumns: [
-      {
-        name: 'name',
-        align: 'left',
-        label: 'Name',
-        field: 'name',
-        sortable: true
-      },
-      {
-        name: 'short_name',
-        align: 'left',
-        label: 'Short Name',
-        field: 'short_name',
-        sortable: true
-      },
-      {
-        name: 'website',
-        align: 'left',
-        label: 'Website',
-        field: 'website',
-        sortable: true
-      },
-      {
-        name: 'country',
-        align: 'left',
-        label: 'Country',
-        field: 'country',
-        sortable: true
-      },
-      {
-        name: 'update',
-        align: 'right',
-        field: 'id'
-      }
+      { name: 'name', align: 'left', label: 'Name', field: 'name', sortable: true },
+      { name: 'short_name', align: 'left', label: 'Short', field: 'short_name', sortable: true },
+      { name: 'website', align: 'left', label: 'Website', field: 'website', sortable: true },
+      { name: 'country', align: 'left', label: 'Country', field: 'country', sortable: true },
+      { name: 'update', align: 'right', field: 'id' }
     ],
-    countries: []
+    pagination: {
+      rowsPerPage: 10
+    },
+    countries: [],
+    countryOptions: []
   }),
   methods: {
     getCountries () {
@@ -184,9 +157,10 @@ export default {
             this.$q.notify({
               color: 'green',
               textColor: 'white',
-              position: 'top-right',
+              position: 'bottom-left',
               message: 'Saved successfully!'
             })
+            this.manufacturers.push((response.data.data))
           }
         })
         .catch(error => console.log(error))
@@ -198,6 +172,22 @@ export default {
           this.manufacturers = response.data.data
           this.loading = false
         })
+        .catch(error => console.log(error))
+    },
+    filterCountries (val, update) {
+      if (val === '') {
+        update(() => {
+          this.countryOptions = this.countries
+        })
+        return
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.countryOptions = this.countries.filter(
+          v => v.name.toLowerCase().indexOf(needle) > -1
+        )
+      })
     }
   },
   created () {

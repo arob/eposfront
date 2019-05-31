@@ -1,21 +1,18 @@
 <template>
-  <q-page padding>
+  <q-page>
     <div class="row q-col-gutter-sm">
       <div class="col-sm-12 col-md-12 col-xs-12">
         <q-slide-transition>
           <div v-show="showForm">
             <q-card flat bordered class="q-pt-sm">
               <q-card-section>
-                <q-form ref="productForm" @reset="resetForm">
+                <q-form ref="productForm">
                   <div class="row q-col-gutter-sm  q-mb-sm">
                     <div class="col-sm-3 col-md-3 col-xs-12">
                       <q-input
-                        ref="code"
-                        outlined
-                        dense
-                        no-error-icon
+                        ref="code" dense no-error-icon
                         v-model="product.code"
-                        label="Code"
+                        label="Code *"
                         lazy-rules
                         :error="codeErrorStatus"
                         :error-message="product.codeError"
@@ -24,12 +21,9 @@
                     </div>
                     <div class="col-sm-5 col-md-5 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        standout
-                        no-error-icon
+                        dense no-error-icon
                         v-model="product.name"
-                        label="Name"
+                        label="Name *"
                         lazy-rules
                         :error="nameErrorStatus"
                         :error-message="product.nameError"
@@ -38,11 +32,9 @@
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
                         v-model="product.model"
-                        label="Model"
+                        label="Model *"
                         lazy-rules
                         :error="modelErrorStatus"
                         :error-message="product.modelError"
@@ -51,23 +43,20 @@
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-input
-                        required
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
+                        label="Rate *"
                         v-model="product.sales_rate"
-                        type="number"
-                        label="Rate"
-                        :rules="[ val => val && val.length > 0 || 'Required']"
+                        :rules="[
+                          val => val && val.length > 0 || 'Required',
+                          val => !isNaN(val) || 'Must be number'
+                        ]"
                       ></q-input>
                     </div>
                   </div>
                   <div class="row q-col-gutter-sm q-mb-md">
                     <div class="col-sm-8 col-md-8 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
                         v-model="product.description"
                         label="Description"
                         lazy-rules
@@ -75,23 +64,19 @@
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
-                        v-model="product.reorder_level"
+                        dense no-error-icon
+                        v-model="product.warranty_period"
                         type="number"
-                        label="Re-order Level"
+                        label="Warranty (Months)"
                         lazy-rules
                       ></q-input>
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
-                        v-model="product.warranty_period"
+                        dense no-error-icon
+                        v-model="product.reorder_level"
                         type="number"
-                        label="Warranty (Months)"
+                        label="Re-order Level"
                         lazy-rules
                       ></q-input>
                     </div>
@@ -99,9 +84,7 @@
                   <div class="row q-col-gutter-sm q-mb-md">
                     <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
                         v-model="product.discount_pct"
                         type="number"
                         label="Discount (%)"
@@ -110,9 +93,7 @@
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
                         v-model="product.vat_pct"
                         type="number"
                         label="VAT (%)"
@@ -121,116 +102,94 @@
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
                         v-model="product.tax_pct"
                         type="number"
                         label="Tax (%)"
                         lazy-rules
                       ></q-input>
                     </div>
-                    <div class="col-sm-2 col-md-2 col-xs-12">
+                    <div class="col-sm-2 col-md-2 col-xs-6">
                       <q-input
-                        outlined
-                        dense
-                        no-error-icon
+                        dense no-error-icon
                         v-model="product.capacity"
                         type="number"
                         label="Size / Capacity"
                         lazy-rules
                       ></q-input>
                     </div>
-                    <div class="col-sm-2 col-md-2 col-xs-12">
+                    <div class="col-sm-2 col-md-2 col-xs-6">
                       <q-select
-                        outlined
-                        dense
+                        dense no-error-icon
                         :options="capacityUnits"
                         label="Capacity Unit"
                         v-model="product.capacity_unit_id"
                         option-value="id"
                         option-label="name"
-                        emit-value
-                        map-options
+                        emit-value map-options
                       />
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12">
                       <q-select
-                        outlined
-                        dense
+                        dense no-error-icon
                         :options="uoms"
                         label="Measuring Unit"
                         v-model="product.uom_id"
                         option-value="id"
                         option-label="name"
-                        emit-value
-                        map-options
+                        emit-value map-options
                       />
                     </div>
                   </div>
                   <div class="row q-col-gutter-sm">
                     <div class="col-sm-4 col-md-4 col-xs-12">
                       <q-select
-                        outlined
-                        dense
-                        :options="suppliers"
-                        label="Supplier"
-                        v-model="product.supplier_id"
+                        use-input dense no-error-icon clearable
+                        label="Manufacturer"
+                        transition-show="scale"
+                        transition-hide="scale"
+                        :options="manufacturerOptions"
+                        v-model="product.manufacturer_id"
                         option-value="id"
                         option-label="name"
-                        emit-value
-                        map-options
+                        emit-value map-options
+                        input-debounce="0"
+                        @filter="filterManufacturers"
                       />
                     </div>
                     <div class="col-sm-4 col-md-4 col-xs-12">
                       <q-select
-                        outlined
-                        dense
-                        :options="manufacturers"
-                        label="Manufacturer"
-                        v-model="product.manufacturer_id"
-                        option-value="id"
-                        option-label="name"
-                        emit-value
-                        map-options
-                      />
-                    </div>
-                    <div class="col-sm-2 col-md-2 col-xs-12">
-                      <q-select
-                        outlined
-                        dense
+                        use-input dense no-error-icon clearable
                         label="Origin"
-                        :options="countries"
+                        transition-show="scale"
+                        transition-hide="scale"
+                        :options="countryOptions"
                         v-model="product.country_id"
                         option-value="id"
                         option-label="name"
-                        emit-value
-                        map-options
+                        emit-value map-options
+                        input-debounce="0"
+                        @filter="filterCountries"
                       />
                     </div>
                     <div class="col-sm-2 col-md-2 col-xs-12 q-mt-sm">
                       <q-toggle
                         v-model="product.status"
-                        label="Status"
-                        left-label
-                        color="teal"
-                      ></q-toggle>
+                        label="Status" left-label color="primary">
+                      </q-toggle>
                     </div>
                   </div>
                   <div class="row q-col-gutter-sm q-mt-xs">
                     <div class="col-sm-4 col-md-4 col-xl-12">
                       <q-btn
                         @click="saveProduct"
-                        icon="save"
-                        label="Save"
-                        color="teal"
-                        class="q-mt-sm">
+                        icon="save" label="Save"
+                        color="primary" class="q-mt-sm">
                       </q-btn>
                       <q-btn
-                        label="Clear"
-                        icon="clear_all"
-                        type="reset"
-                        color="grey-6"
+                        @click="clearForm"
+                        label="Clear" icon="clear_all"
+                        type="reset" color="grey-6"
                         class="q-mt-sm q-ml-sm">
                       </q-btn>
                     </div>
@@ -247,35 +206,47 @@
             :data="products"
             :loading="loading"
             :columns="tableColumns"
+            :pagination.sync="pagination"
             row-key="id"
           >
             <template v-slot:top-left>
               <span class="text-h6">Products</span>
             </template>
             <template v-slot:top-right>
-              <q-input dense debounce="300" color="primary" v-model="filter">
+              <q-input dense debounce="300"
+                color="primary" v-model="filter"
+              >
                 <template v-slot:append>
                   <q-icon name="search" />
                 </template>
               </q-input>
               <q-btn
-                round
-                size="12px"
-                color="red"
+                round size="12px" color="red"
                 :icon="showFormIcon"
                 class="q-mb-none q-ml-md float-right"
                 @click="showForm = !showForm"
               >
               </q-btn>
             </template>
+            <q-td slot="body-cell-status" slot-scope="props" :props="props">
+              <q-checkbox dense :value="!!props.row.status"></q-checkbox>
+            </q-td>
             <q-td slot="body-cell-update" slot-scope="props" :props="props">
-              <q-btn
-                icon="edit"
-                round
-                size="12px"
-                color="teal">
-                {{props.value}}
-              </q-btn>
+              <q-btn-group>
+                <q-btn
+                  dense outlined
+                  color="primary"
+                  class="q-px-sm"
+                  icon="mdi-eye-outline"
+                  :to="{name: 'product-detail', params: {id: props.value}}"
+                />
+                <q-btn
+                  dense color="secondary"
+                  icon="mdi-square-edit-outline"
+                  class="q-px-sm"
+                  @click="updateProduct(props.row)"
+                />
+              </q-btn-group>
             </q-td>
           </q-table>
         </q-card>
@@ -294,6 +265,7 @@ export default {
     filter: '',
     products: [],
     product: {
+      id: '',
       code: '',
       codeError: '',
       name: '',
@@ -305,10 +277,10 @@ export default {
       uom_id: '',
       description: '',
       sales_rate: '',
-      vat_pct: 0,
-      tax_pct: 0,
-      discount_pct: 0,
-      reorder_level: 0,
+      vat_pct: '',
+      tax_pct: '',
+      discount_pct: '',
+      reorder_level: '',
       warranty_period: '',
       supplier_id: '',
       manufacturer_id: '',
@@ -317,27 +289,9 @@ export default {
       user_id: 1
     },
     tableColumns: [
-      {
-        name: 'code',
-        align: 'left',
-        label: 'Code',
-        field: 'code',
-        sortable: true
-      },
-      {
-        name: 'name',
-        align: 'left',
-        label: 'Name',
-        field: 'name',
-        sortable: true
-      },
-      {
-        name: 'model',
-        align: 'left',
-        label: 'Model',
-        field: 'model',
-        sortable: true
-      },
+      { name: 'code', align: 'left', label: 'Code', field: 'code', sortable: true },
+      { name: 'name', align: 'left', label: 'Name', field: 'name', sortable: true },
+      { name: 'model', align: 'left', label: 'Model', field: 'model', sortable: true },
       {
         name: 'price',
         align: 'right',
@@ -346,17 +300,25 @@ export default {
         sortable: true
       },
       {
-        name: 'update',
+        name: 'stock',
         align: 'right',
-        label: 'Update',
-        field: 'id'
-      }
+        label: 'Stok Quantity',
+        field: 'stock_qty',
+        format: (val, row) => Number(val).toFixed(0),
+        sortable: true
+      },
+      { name: 'status', align: 'center', label: 'Status', field: 'status', sortable: true },
+      { name: 'update', align: 'right', label: 'Update', field: 'id' }
     ],
-    suppliers: [],
+    pagination: {
+      rowsPerPage: 10
+    },
     manufacturers: [],
+    manufacturerOptions: [],
     capacityUnits: [],
     uoms: [],
-    countries: []
+    countries: [],
+    countryOptions: []
   }),
   methods: {
     getProducts () {
@@ -370,46 +332,95 @@ export default {
         },
         error => {
           console.log(error)
-        }
-        ).catch(error => console.log(error))
+        })
+        .catch(error => console.log(error))
     },
     saveProduct () {
-      this.$axios.post(`products`, this.product)
-        .then(response => {
-          if (response !== null) {
-            console.log(response.data.data)
-            this.products.push(response.data.data)
-            this.$q.notify({
-              message: 'Save successfull!',
-              position: 'top-right',
-              color: 'green'
-            })
-            this.resetForm()
-          }
-        }
-        )
-        .catch(error => {
-          if (error.response) {
-            console.log(error)
-            // this.product.codeError = error.response.data.errors['code'][0]
-            // this.product.nameError = error.response.data.errors['name'][0]
-            // this.product.modelError = error.response.data.errors['model'][0]
+      this.$refs.productForm.validate()
+        .then(result => {
+          if (result === true) {
+            if (this.updateMode !== true) {
+              this.$axios.post(`products`, this.product)
+                .then(response => {
+                  if (response !== null) {
+                    console.log(response.data.data)
+                    this.products.push(response.data.data)
+                    this.$q.notify({
+                      message: 'Save successfull!',
+                      position: 'bottom-left',
+                      color: 'green'
+                    })
+                    this.clearForm()
+                  }
+                })
+                .catch(error => {
+                  if (error.response) {
+                    console.log(error.response.data.errors['code'][0])
+                    this.product.codeError = error.response.data.errors['code'][0]
+                  }
+                })
+            } else {
+              this.$axios.put(`products/${this.product.id}`, this.product)
+                .then(response => {
+                  if (response !== null) {
+                    console.log(response.data.data)
+                    this.getProducts()
+                    this.$q.notify({
+                      message: 'Update successfull!',
+                      position: 'bottom-left',
+                      color: 'green'
+                    })
+                    this.clearForm()
+                  }
+                })
+                .catch(error => {
+                  if (error.response) {
+                    console.log(error.response.data.errors['code'][0])
+                    this.product.codeError = error.response.data.errors['code'][0]
+                  }
+                })
+            }
           }
         })
+        .catch(formError => console.log(formError))
     },
-    resetForm () {
-      this.product.codeError = ''
-      this.product.nameError = ''
-      this.product.modelError = ''
-      // this.$refs.productForm.reset()
+    updateProduct (product) {
+      console.log(product)
+      this.showForm = true
+      this.updateMode = true
+      this.product.id = product.id
+      this.product.code = product.code
+      this.product.name = product.name
+      this.product.model = product.model
+      this.product.sales_rate = product.sales_rate
+      this.product.description = product.description
+      this.product.warranty_period = product.warranty_period
+      this.product.capacity = product.capacity
+      this.product.reorder_level = product.reorder_level
+      this.product.discount_pct = product.discount_pct
+      this.product.vat_pct = product.vat_pct
+      this.product.tax_pct = product.tax_pct
+      this.product.capacity_unit_id = product.capacity_unit_id
+      this.product.uom_id = product.uom_id
+      this.product.manufacturer_id = product.manufacturer.id
+      this.product.country_id = product.origin.id
+      this.product.status = !!product.status
     },
-    getSuppliers () {
-      this.$axios.get(`suppliers`)
-        .then(response => {
-          if (response !== null) {
-            this.suppliers = response.data.data
-          }
-        })
+    clearForm () {
+      this.product.code = ''
+      this.product.name = ''
+      this.product.model = ''
+      this.product.sales_rate = ''
+      this.product.description = ''
+      this.product.reorder_level = ''
+      this.product.warranty_period = ''
+      this.product.capacity = ''
+      this.product.capacity_unit_id = ''
+      this.product.uom_id = ''
+      this.product.manufacturer_id = ''
+      this.product.country_id = ''
+      this.$refs.productForm.resetValidation()
+      this.updateMode = false
     },
     getManufacturers () {
       this.$axios.get(`manufacturers`)
@@ -435,6 +446,36 @@ export default {
           }
         })
     },
+    filterManufacturers (val, update) {
+      if (val === '') {
+        update(() => {
+          this.manufacturerOptions = this.manufacturers
+        })
+        return
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.manufacturerOptions = this.manufacturers.filter(
+          v => v.name.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    },
+    filterCountries (val, update) {
+      if (val === '') {
+        update(() => {
+          this.countryOptions = this.countries
+        })
+        return
+      }
+
+      update(() => {
+        const needle = val.toLowerCase()
+        this.countryOptions = this.countries.filter(
+          v => v.name.toLowerCase().indexOf(needle) > -1
+        )
+      })
+    },
     getUoms () {
       this.$axios.get(`uoms`)
         .then(response => {
@@ -448,7 +489,6 @@ export default {
     this.getProducts()
     this.getCapacityUnits()
     this.getUoms()
-    this.getSuppliers()
     this.getManufacturers()
     this.getCountries()
   },

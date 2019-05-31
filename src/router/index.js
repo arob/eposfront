@@ -1,18 +1,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Autocomplete from 'v-autocomplete'
 
 import routes from './routes'
 
 Vue.use(VueRouter)
-Vue.use(Autocomplete)
 
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation
  */
 
-export default function (/* { store, ssrContext } */) {
+export default function ({ store }) {
   const Router = new VueRouter({
     scrollBehavior: () => ({ x: 0, y: 0 }),
     routes,
@@ -23,6 +21,24 @@ export default function (/* { store, ssrContext } */) {
     mode: 'history',
     // mode: process.env.VUE_ROUTER_MODE,
     base: process.env.VUE_ROUTER_BASE
+  })
+
+  Router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      // this route requires auth, check if logged in
+      // if not, redirect to login page.
+      const loggedIn = true
+      if (!loggedIn) {
+        next({
+          path: '/login',
+          query: { redirect: to.fullPath }
+        })
+      } else {
+        next()
+      }
+    } else {
+      next() // make sure to always call next()!
+    }
   })
 
   return Router

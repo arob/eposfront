@@ -1,47 +1,42 @@
 <template>
   <q-page padding>
-    <div class="q-pa-sm">
-      <div class="q-gutter-md row">
-        <div class="col-sm-4 col-md-4 col-xs-12">
-          <q-select
-            dense
-            clearable
-            clear-icon="clear"
-            v-model="selected"
-            use-input
-            hide-selected
-            input-debounce="0"
-            label="Find"
-            :options="options"
-            :option-label="(item) => item ? item.model + ': ' + item.name : ''"
-            option-value="id"
-            @filter="filterFn"
-            @input="showSelected"
-          >
-            <template v-slot:no-option>
-              <q-item>
-                <q-item-section class="text-grey">
-                  No results
+    <q-table
+      title="Treats"
+      :data="products"
+      :columns="columns"
+      row-key="name"
+      grid
+      hide-header
+    >
+      <template v-slot:top-right>
+        <q-input borderless dense debounce="300" v-model="filter" placeholder="Search">
+          <template v-slot:append>
+            <q-icon name="search" />
+          </template>
+        </q-input>
+      </template>
+
+      <template v-slot:item="props">
+        <div
+          class="col-xs-12 col-sm-6 col-md-4 col-lg-3 grid-style-transition">
+          <q-card flat bordered>
+            <q-card-section>
+            </q-card-section>
+            <q-separator />
+            <q-list dense>
+              <q-item v-for="col in props.cols.filter(col => col.name !== 'desc')" :key="col.name">
+                <q-item-section>
+                  <q-item-label>{{ col.label }}</q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <q-item-label caption>{{ col.value }}</q-item-label>
                 </q-item-section>
               </q-item>
-            </template>
-          </q-select>
+            </q-list>
+          </q-card>
         </div>
-        <q-input
-          v-model="product_qty"
-          label="Qty"
-          dense
-        ></q-input>
-        <q-btn
-          dense
-          ref="addBtn"
-          color="teal"
-          label="add"
-          icon="add"
-          @click="added">
-        </q-btn>
-      </div>
-    </div>
+      </template>
+    </q-table>
   </q-page>
 </template>
 
@@ -51,10 +46,29 @@ export default {
   data () {
     return {
       product_qty: '',
+      filter: '',
       model: '',
       options: [],
       products: [],
-      selected: ''
+      selected: '',
+      columns: [
+        {
+          name: 'desc',
+          required: true,
+          label: 'Dessert (100g serving)',
+          align: 'left',
+          field: row => row.name,
+          format: val => `${val}`,
+          sortable: true
+        },
+        { name: 'calories', align: 'center', label: 'Calories', field: 'calories', sortable: true },
+        { name: 'fat', label: 'Fat (g)', field: 'fat', sortable: true },
+        { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
+        { name: 'protein', label: 'Protein (g)', field: 'protein' },
+        { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
+        { name: 'calcium', label: 'Calcium (%)', field: 'calcium', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) },
+        { name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) }
+      ]
     }
   },
 
@@ -67,22 +81,6 @@ export default {
           }
         })
         .catch(error => console.log(error))
-    },
-    filterFn (val, update) {
-      if (val === '') {
-        update(() => {
-          this.options = this.products
-        })
-        return
-      }
-
-      update(() => {
-        const needle = val.toLowerCase()
-        this.options = this.products.filter(
-          v => v.name.toLowerCase().indexOf(needle) > -1 ||
-            v.model.toLowerCase().indexOf(needle) > -1
-        )
-      })
     },
     showSelected () {
       console.log(this.selected.id)

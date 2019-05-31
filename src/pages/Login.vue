@@ -1,6 +1,6 @@
 <template>
-  <q-page padding>
-    <h5 class="q-my-none">Login</h5>
+  <q-page>
+    <div class="absolute-center"><h3>Login</h3></div>
   </q-page>
 </template>
 

@@ -5,7 +5,7 @@ export default async ({
   app, router, Vue
 }) => {
   Vue.prototype.$axios = axios.create({
-    baseURL: 'http://eposapi.test/api/v1',
+    baseURL: 'http://eposapi.test/api/v1/',
     // withCredentials: true,
     headers: {
       'Accept': 'application/json',

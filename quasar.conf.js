@@ -14,9 +14,9 @@ module.exports = function (ctx) {
 
     extras: [
       'roboto-font',
-      'material-icons' // optional, you are not bound to it
+      'material-icons', // optional, you are not bound to it
       // 'ionicons-v4',
-      // 'mdi-v3',
+      'mdi-v3'
       // 'fontawesome-v5',
       // 'eva-icons'
     ],
@@ -34,6 +34,12 @@ module.exports = function (ctx) {
         'QToolbar',
         'QToolbarTitle',
         'QBtn',
+        'QCheckbox',
+        'QBtnGroup',
+        'QExpansionItem',
+        'QTooltip',
+        'QBtnDropdown',
+        'QSeparator',
         'QFab',
         'QFabAction',
         'QIcon',
@@ -45,6 +51,7 @@ module.exports = function (ctx) {
         'QCardSection',
         'QForm',
         'QInput',
+        'QField',
         'QTable',
         'QTh',
         'QTr',
@@ -62,10 +69,21 @@ module.exports = function (ctx) {
       plugins: [
         'Notify',
         'LocalStorage'
-      ]
+      ],
 
       // iconSet: 'ionicons-v4'
       // lang: 'de' // Quasar language
+      config: {
+        brand: {
+          primary: '#40a747',
+          secondary: '#26A69A',
+          accent: '#9C27B0',
+          positive: '#21BA45',
+          negative: '#C10015',
+          info: '#31CCEC',
+          warning: '#F2C037'
+        }
+      }
     },
 
     supportIE: false,
