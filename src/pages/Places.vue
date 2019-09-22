@@ -1,14 +1,5 @@
 <template>
   <q-page>
-    <q-card flat bordered>
-      <q-card-section class="q-py-sm">
-          <div class="row">
-            <div class="col-sm-12 col-md-12 col-xs-12">
-              <span class="text-h6">Places</span>
-            </div>
-          </div>
-      </q-card-section>
-    </q-card>
     <div class="row q-col-gutter-none">
       <div class="col-md-4 col-sm-12 col-xs-12">
           <q-card flat bordered>
@@ -42,69 +33,75 @@
                 </div>
               </q-form>
             </q-card-section>
-            <div class="q-pt-sm">
-              <q-table
-                flat
-                :data="countries"
-                :columns="countryColumns"
-                :loading="countryLoading"
-                :pagination.sync="pagination"
-                row-key="name"
-              >
-              <q-td slot="body-cell-update" slot-scope="props" :props="props">
-                <q-btn
-                  @click="updateCountry(props.row)"
-                  icon="mdi-square-edit-outline"
-                  round
-                  size="12px"
-                  color="primary"
-                >
-                </q-btn>
-              </q-td>
-              </q-table>
-            </div>
+              <q-card flat bordered square>
+                <q-card-section class="q-pa-sm">
+                  <q-table
+                    flat
+                    :table-header-style="{ backgroundColor: '#f0f0f0' }"
+                    :data="countries"
+                    :columns="countryColumns"
+                    :loading="countryLoading"
+                    :pagination.sync="countryPagination"
+                    row-key="name"
+                  >
+                  <q-td slot="body-cell-update" slot-scope="props" :props="props">
+                    <q-btn
+                      @click="updateCountry(props.row)"
+                      icon="mdi-square-edit-outline"
+                      round
+                      size="12px"
+                      color="primary"
+                    >
+                    </q-btn>
+                  </q-td>
+                  </q-table>
+                </q-card-section>
+              </q-card>
           </q-card>
       </div>
       <div class="col-md-4 col-sm-12 col-xs-12">
-          <q-card flat bordered>
-            <q-card-section>
-              <q-form ref="districtForm">
-                <q-input
-                  dense
-                  no-error-icon
-                  v-model="district.name"
-                  label="District"
-                  lazy-rules
-                  :rules="[ val => val && val.length > 0 || 'Required']"
-                >
-                  <template v-slot:after>
-                    <q-btn dense @click="addDistrict"
-                      icon="save" type="submit" color="primary">
-                    </q-btn>
-                  </template>
-                </q-input>
-              </q-form>
-            </q-card-section>
-            <div class="q-pt-sm">
-              <q-table
-                flat
-                :data="districts"
-                :loading="districtLoading"
-                :columns="tableColumns"
-                :pagination.sync="pagination"
-                row-key="name"
+        <q-card flat bordered>
+          <q-card-section>
+            <q-form ref="districtForm">
+              <q-input
+                dense
+                no-error-icon
+                v-model="district.name"
+                label="District"
+                lazy-rules
+                :rules="[ val => val && val.length > 0 || 'Required']"
               >
-                <q-td slot="body-cell-update" slot-scope="props" :props="props">
-                  <q-btn
-                    @click="updateDistrict(props.row)"
-                    icon="mdi-square-edit-outline"
-                    round
-                    size="12px"
-                    color="primary">
+                <template v-slot:after>
+                  <q-btn dense @click="addDistrict"
+                    icon="save" type="submit" color="primary">
                   </q-btn>
-                </q-td>
-              </q-table>
-            </div>
+                </template>
+              </q-input>
+            </q-form>
+          </q-card-section>
+            <q-card flat bordered square>
+              <q-card-section class="q-pa-sm">
+                <q-table
+                  flat
+                  :table-header-style="{ backgroundColor: '#f0f0f0' }"
+                  :data="districts"
+                  :loading="districtLoading"
+                  :columns="tableColumns"
+                  :pagination.sync="districtPagination"
+                  row-key="name"
+                >
+                  <q-td slot="body-cell-update" slot-scope="props" :props="props">
+                    <q-btn
+                      @click="updateDistrict(props.row)"
+                      icon="mdi-square-edit-outline"
+                      round
+                      size="12px"
+                      color="primary">
+                    </q-btn>
+                  </q-td>
+                </q-table>
+              </q-card-section>
+            </q-card>
           </q-card>
       </div>
       <div class="col-md-4 col-sm-12 col-xs-12">
@@ -127,26 +124,29 @@
                 </q-input>
               </q-form>
             </q-card-section>
-            <div class="q-pt-sm">
-              <q-table
-                flat
-                :data="thanas"
-                :loading="thanaLoading"
-                :columns="tableColumns"
-                :pagination.sync="pagination"
-                row-key="name"
-              >
-                <q-td slot="body-cell-update" slot-scope="props" :props="props">
-                  <q-btn
-                    @click="updateThana(props.row)"
-                    icon="mdi-square-edit-outline"
-                    round
-                    size="12px"
-                    color="primary">
-                  </q-btn>
-                </q-td>
-              </q-table>
-            </div>
+            <q-card flat square bordered>
+              <q-card-section class="q-pa-sm">
+                <q-table
+                  flat
+                  :table-header-style="{ backgroundColor: '#f0f0f0' }"
+                  :data="thanas"
+                  :loading="thanaLoading"
+                  :columns="tableColumns"
+                  :pagination.sync="thanaPagination"
+                  row-key="name"
+                >
+                  <q-td slot="body-cell-update" slot-scope="props" :props="props">
+                    <q-btn
+                      @click="updateThana(props.row)"
+                      icon="mdi-square-edit-outline"
+                      round
+                      size="12px"
+                      color="primary">
+                    </q-btn>
+                  </q-td>
+                </q-table>
+              </q-card-section>
+            </q-card>
           </q-card>
       </div>
     </div>
@@ -182,7 +182,13 @@ export default {
       thanas: [],
       thanaUpdate: false,
       thanaLoading: false,
-      pagination: {
+      countryPagination: {
+        rowsPerPage: 7
+      },
+      districtPagination: {
+        rowsPerPage: 7
+      },
+      thanaPagination: {
         rowsPerPage: 7
       }
     }
@@ -283,6 +289,7 @@ export default {
     this.getCountries()
     this.getDistricts()
     this.getThanas()
+    this.$store.dispatch('pageTitle', 'Places')
   }
 }
 </script>

@@ -1,14 +1,5 @@
 <template>
   <q-page>
-    <q-card flat bordered>
-      <q-card-section class="q-py-sm">
-          <div class="row">
-            <div class="col-sm-12 col-md-12 col-xs-12">
-              <span class="text-h6">Tags, UOM and Capacity Units</span>
-            </div>
-          </div>
-      </q-card-section>
-    </q-card>
     <div class="row q-col-gutter-none">
       <div class="col-md-4 col-sm-4 col-xs-12">
         <q-card flat bordered>
@@ -24,7 +15,7 @@
                   >
                     <template v-slot:after>
                       <q-btn dense @click="saveTag"
-                        icon="add" type="submit" color="primary">
+                        icon="save" type="submit" color="primary">
                       </q-btn>
                     </template>
                   </q-input>
@@ -32,20 +23,25 @@
               </div>
             </q-form>
           </q-card-section>
-            <q-table
-              flat
-              :data="tags"
-              :loading="tagsLoading"
-              :columns="tagColumns"
-              :pagination.sync="pagination"
-              row-key="name"
-              >
-              <q-td slot="body-cell-update" slot-scope="props" :props="props">
-                <q-btn  round icon="mdi-square-edit-outline" size="12px"
-                  color="primary"
-                ></q-btn>
-              </q-td>
-            </q-table>
+            <q-card flat bordered>
+              <q-card-section class="q-pa-sm">
+                <q-table
+                  flat
+                  :table-header-style="{ backgroundColor: '#f0f0f0' }"
+                  :data="tags"
+                  :loading="tagsLoading"
+                  :columns="tagColumns"
+                  :pagination.sync="tagsPagination"
+                  row-key="name"
+                  >
+                  <q-td slot="body-cell-update" slot-scope="props" :props="props">
+                    <q-btn round icon="mdi-square-edit-outline" size="12px"
+                      color="primary"
+                    ></q-btn>
+                  </q-td>
+                </q-table>
+              </q-card-section>
+            </q-card>
         </q-card>
       </div>
       <div class="col-md-4 col-sm-4 col-xs-12">
@@ -72,7 +68,7 @@
                       >
                         <template v-slot:after>
                           <q-btn dense @click="saveUom"
-                            icon="add" type="submit" color="primary">
+                            icon="save" type="submit" color="primary">
                           </q-btn>
                         </template>
                       </q-input>
@@ -82,22 +78,27 @@
               </div>
             </q-form>
           </q-card-section>
-            <q-table
-              flat
-              :data="uoms"
-              :loading="uomsLoading"
-              :columns="tableColumns"
-              :pagination.sync="pagination"
-              row-key="uoms"
-            >
-            <q-td slot="body-cell-update" slot-scope="props" :props="props">
-              <q-btn
-                icon="mdi-square-edit-outline"
-                round size="12px"
-                color="primary">
-              </q-btn>
-            </q-td>
-          </q-table>
+            <q-card flat bordered>
+              <q-card-section class="q-pa-sm">
+                <q-table
+                  flat
+                  :table-header-style="{ backgroundColor: '#f0f0f0' }"
+                  :data="uoms"
+                  :loading="uomsLoading"
+                  :columns="tableColumns"
+                  :pagination.sync="uomPagination"
+                  row-key="uoms"
+                >
+                <q-td slot="body-cell-update" slot-scope="props" :props="props">
+                  <q-btn
+                    icon="mdi-square-edit-outline"
+                    round size="12px"
+                    color="primary">
+                  </q-btn>
+                </q-td>
+              </q-table>
+              </q-card-section>
+            </q-card>
         </q-card>
       </div>
       <div class="col-md-4 col-sm-4 col-xs-12">
@@ -124,7 +125,7 @@
                       >
                         <template v-slot:after>
                           <q-btn dense @click="saveCapacityUnit"
-                            icon="add" type="submit" color="primary">
+                            icon="save" type="submit" color="primary">
                           </q-btn>
                         </template>
                       </q-input>
@@ -134,22 +135,27 @@
               </div>
             </q-form>
           </q-card-section>
-          <q-table
-            flat
-            :data="capacityUnits"
-            :columns="tableColumns"
-            :loading="capacityUnitsLoading"
-            :pagination.sync="pagination"
-            row-key="id"
-            >
-            <q-td slot="body-cell-update" slot-scope="props" :props="props">
-              <q-btn
-                icon="mdi-square-edit-outline"
-                round size="12px"
-                color="primary">
-              </q-btn>
-            </q-td>
-          </q-table>
+          <q-card flat bordered>
+            <q-card-section class="q-pa-sm">
+              <q-table
+                flat
+                :table-header-style="{ backgroundColor: '#f0f0f0' }"
+                :data="capacityUnits"
+                :columns="tableColumns"
+                :loading="capacityUnitsLoading"
+                :pagination.sync="capacityPagination"
+                row-key="id"
+                >
+                <q-td slot="body-cell-update" slot-scope="props" :props="props">
+                  <q-btn
+                    icon="mdi-square-edit-outline"
+                    round size="12px"
+                    color="primary">
+                  </q-btn>
+                </q-td>
+              </q-table>
+            </q-card-section>
+          </q-card>
         </q-card>
       </div>
     </div>
@@ -190,7 +196,13 @@ export default {
       capacityUnits: [],
       capacityUnitUpdate: false,
       capacityUnitsLoading: false,
-      pagination: {
+      tagsPagination: {
+        rowsPerPage: 7
+      },
+      uomPagination: {
+        rowsPerPage: 7
+      },
+      capacityPagination: {
         rowsPerPage: 7
       }
     }
@@ -264,6 +276,7 @@ export default {
     this.getTags()
     this.getUoms()
     this.getCapacityUnits()
+    this.$store.dispatch('pageTitle', 'Tags, UOMS & Measurement Units')
   }
 }
 </script>

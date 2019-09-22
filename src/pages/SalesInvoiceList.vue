@@ -1,52 +1,55 @@
 <template>
   <q-page>
-    <q-card flat bordered>
-      <div class="row q-col-gutter-sm">
-        <div class="col-sm-12 col-md-12 col-xs-12">
-          <q-table
-            flat square wrap-cells
-            :loading="loading"
-            :data="invoices"
-            :columns="tableColumns"
-            :filter="filter"
-            row-key="id"
-            :pagination.sync="pagination"
-          >
-            <template v-slot:top-left>
-              <span class="text-h6">Sales Invoice List</span>
-            </template>
-            <template v-slot:top-right>
-              <q-input dense debounce="300" color="primary" v-model="filter">
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-              <q-btn
-                round size="12px" color="red"
-                icon="add"
-                class="q-mb-none q-ml-md float-right"
-                :to="{name: 'sales-invoice'}"
+    <q-card flat square>
+      <q-card-section class="q-pa-sm">
+        <div class="row q-col-gutter-sm">
+          <div class="col-sm-12 col-md-12 col-xs-12">
+            <q-card square flat bordered>
+              <q-table
+                flat square wrap-cells
+                :table-header-style="{ backgroundColor: '#f0f0f0' }"
+                :loading="loading"
+                :data="invoices"
+                :columns="tableColumns"
+                :filter="filter"
+                row-key="id"
+                :pagination.sync="pagination"
               >
-              </q-btn>
-            </template>
-            <q-td slot="body-cell-action" slot-scope="props" :props="props">
-              <q-btn-group>
-                <q-btn
-                  dense color="primary" icon="visibility"
-                  class="q-px-sm"
-                  :to="{name: 'sales-invoice-detail', params: {id: props.value}}"
-                />
-                <q-btn
-                  dense color="secondary"
-                  icon="mdi-square-edit-outline"
-                  class="q-px-sm"
-                >
-                </q-btn>
-              </q-btn-group>
-            </q-td>
-          </q-table>
+                <template v-slot:top-right>
+                  <q-input dense debounce="300" color="primary" v-model="filter">
+                    <template v-slot:append>
+                      <q-icon name="search" />
+                    </template>
+                  </q-input>
+                  <q-btn
+                    round size="12px" color="red"
+                    icon="add"
+                    class="q-mb-none q-ml-md float-right"
+                    :to="{name: 'sales-invoice'}"
+                  >
+                  </q-btn>
+                </template>
+                <q-td slot="body-cell-action" slot-scope="props" :props="props">
+                  <q-btn-group>
+                    <q-btn
+                      dense color="primary" icon="visibility"
+                      class="q-px-sm"
+                      :to="{name: 'sales-invoice-detail', params: {id: props.value}}"
+                    />
+                    <q-btn
+                      dense color="secondary"
+                      icon="mdi-square-edit-outline"
+                      class="q-px-sm"
+                      :to="{name: 'sales-invoice-update', params: {id: props.value}}"
+                    >
+                    </q-btn>
+                  </q-btn-group>
+                </q-td>
+              </q-table>
+            </q-card>
+          </div>
         </div>
-      </div>
+      </q-card-section>
     </q-card>
   </q-page>
 </template>
@@ -118,7 +121,13 @@ export default {
   methods: {
     getInvoices () {
       this.loading = true
-      this.$axios.get(`sales-invoices`)
+      this.$axios.get(`sales-invoices`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.$store.state.token
+        }
+      })
         .then(response => {
           if (response !== null) {
             this.invoices = response.data.data
@@ -130,9 +139,7 @@ export default {
   },
   created () {
     this.getInvoices()
+    this.$store.dispatch('pageTitle', 'Sales Invoices')
   }
 }
 </script>
-
-<style>
-</style>

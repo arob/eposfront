@@ -5,26 +5,30 @@ export default async ({
   app, router, Vue
 }) => {
   Vue.prototype.$axios = axios.create({
-    baseURL: 'http://eposapi.test/api/v1/',
+    baseURL: 'http://eposapi.test/api/v1/'
     // withCredentials: true,
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    }
   })
   Vue.prototype.$axios.interceptors.response.use(function (response) {
     return response
   }, function (error) {
-    if (error.response.status === 401) {
+    if (error.response.status === 403) {
       Notify.create({
         color: 'yellow',
         textColor: 'black',
-        position: 'top-right',
-        message: 'Permission Denied!',
+        position: 'bottom-right',
+        message: 'Sorry, Permission denied!',
         closeBtn: 'close'
       })
-      console.log(this)
-      // router.push('/login')
+      // console.log(this)
+      router.go(-1)
+    } else if (error.response.status === 401) {
+      Notify.create({
+        color: 'yellow',
+        textColor: 'black',
+        position: 'bottom-right',
+        message: 'Invalid Credentials!',
+        closeBtn: 'close'
+      })
     } else {
       return Promise.reject(error)
     }

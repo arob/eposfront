@@ -4,7 +4,7 @@
       <div class="col-sm-12 col-md-12 col-xs-12">
         <q-slide-transition>
           <div v-show="showForm">
-            <q-card flat bordered class="q-pt-sm">
+            <q-card flat square bordered class="q-pa-sm">
               <q-card-section>
                 <q-form ref="customerForm">
                   <div class="row q-col-gutter-sm">
@@ -55,30 +55,7 @@
                         emit-value map-options
                         input-debounce="0"
                         @filter="filterThanas"
-                      >
-                        <template v-slot:append>
-                          <q-btn dense flat color="grey-5" icon="mdi-refresh">
-                            <q-tooltip
-                              content-class="bg-amber text-black shadow-4"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              Reload thana / upazilla list
-                            </q-tooltip>
-                          </q-btn>
-                        </template>
-                        <template v-slot:after>
-                          <q-btn dense outline color="secondary" icon="add">
-                            <q-tooltip
-                              content-class="bg-amber text-black shadow-4"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              Add a new Thana / Upazilla
-                            </q-tooltip>
-                          </q-btn>
-                        </template>
-                      </q-select>
+                      ></q-select>
                     </div>
                     <div class="col-sm-3 col-md-3 col-xs-12">
                       <q-select
@@ -93,30 +70,7 @@
                         emit-value map-options
                         input-debounce="0"
                         @filter="filterDistricts"
-                      >
-                        <template v-slot:append>
-                          <q-btn dense flat color="grey-5" icon="mdi-refresh">
-                            <q-tooltip
-                              content-class="bg-amber text-black shadow-4"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              Reload district list
-                            </q-tooltip>
-                          </q-btn>
-                        </template>
-                        <template v-slot:after>
-                          <q-btn dense outline color="secondary" icon="add">
-                            <q-tooltip
-                              content-class="bg-amber text-black shadow-4"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              Add a new district
-                            </q-tooltip>
-                          </q-btn>
-                        </template>
-                      </q-select>
+                      ></q-select>
                     </div>
                   </div>
                   <div class="row q-col-gutter-sm">
@@ -133,30 +87,7 @@
                         emit-value map-options
                         input-debounce="0"
                         @filter="filterCountries"
-                      >
-                        <template v-slot:append>
-                          <q-btn dense flat color="grey-5" icon="mdi-refresh">
-                            <q-tooltip
-                              content-class="bg-amber text-black shadow-4"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              Reload country list
-                            </q-tooltip>
-                          </q-btn>
-                        </template>
-                        <template v-slot:after>
-                          <q-btn dense outline color="secondary" icon="add">
-                            <q-tooltip
-                              content-class="bg-amber text-black shadow-4"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              Add a new Country
-                            </q-tooltip>
-                          </q-btn>
-                        </template>
-                      </q-select>
+                      ></q-select>
                     </div>
                     <div class="col-sm-4 col-md-4 col-xs-12">
                       <q-input
@@ -198,64 +129,65 @@
             </q-card>
           </div>
         </q-slide-transition>
-        <q-card flat bordered>
-          <q-table
-            flat wrap-cells
-            :filter="filter"
-            :data="customers"
-            :loading="loading"
-            :columns="tableColumns"
-            :pagination.sync="pagination"
-            row-key="id"
-          >
-            <template v-slot:top-left>
-              <span class="text-h6">Customers</span>
-            </template>
-            <template v-slot:top-right class="float-right">
-              <q-input dense debounce="300" color="primary" v-model="filter">
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-              <q-btn
-                round size="12px" color="red"
-                :icon="showFormIcon"
-                class="q-mb-none q-ml-md float-right"
-                @click="showForm = !showForm"
-              >
-              </q-btn>
-            </template>
-            <q-td slot="body-cell-update" slot-scope="props" :props="props">
-              <q-btn-group>
+        <q-card flat square bordered>
+          <q-card-section class="q-pa-sm">
+            <q-table
+              flat wrap-cells
+              :filter="filter"
+              :table-header-style="{ backgroundColor: '#f0f0f0' }"
+              :data="customers"
+              :loading="loading"
+              :columns="tableColumns"
+              :pagination.sync="pagination"
+              row-key="id"
+            >
+              <template v-slot:top-right class="float-right">
+                <q-input dense debounce="300" color="primary" v-model="filter">
+                  <template v-slot:append>
+                    <q-icon name="search" />
+                  </template>
+                </q-input>
                 <q-btn
-                  dense color="primary" icon="visibility"
-                  class="q-px-sm"
-                  :to="{name: 'customer-detail', params: {id: props.value}}"
+                  round size="12px" color="red"
+                  :icon="showFormIcon"
+                  class="q-mb-none q-ml-md float-right"
+                  @click="showForm = !showForm"
                 >
+                </q-btn>
+              </template>
+              <q-td slot="body-cell-update" slot-scope="props" :props="props">
+                <q-btn-group>
+                  <q-btn
+                    dense color="primary" icon="visibility"
+                    class="q-px-sm"
+                    :to="{name: 'customer-detail', params: {id: props.value}}"
+                  >
+                      <q-tooltip
+                      content-class="bg-amber text-black shadow-4"
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      View details
+                    </q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    dense color="secondary"
+                    icon="mdi-square-edit-outline"
+                    class="q-px-sm"
+                    @click="updateCustomer(props.row)"
+                  >
                     <q-tooltip
-                    content-class="bg-amber text-black shadow-4"
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    View details
-                  </q-tooltip>
-                </q-btn>
-                <q-btn
-                  dense color="secondary"
-                  icon="mdi-square-edit-outline"
-                  class="q-px-sm"
-                >
-                  <q-tooltip
-                    content-class="bg-amber text-black shadow-4"
-                    transition-show="scale"
-                    transition-hide="scale"
-                  >
-                    Update record
-                  </q-tooltip>
-                </q-btn>
-              </q-btn-group>
-            </q-td>
-          </q-table>
+                      content-class="bg-amber text-black shadow-4"
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      Update record
+                    </q-tooltip>
+                  </q-btn>
+                </q-btn-group>
+              </q-td>
+            </q-table>
+          </q-card-section>
         </q-card>
       </div>
     </div>
@@ -267,7 +199,7 @@ export default {
   name: 'Customer',
   data: () => ({
     showForm: false,
-    updateMode: true,
+    updateMode: false,
     loading: false,
     filter: '',
     customers: [],
@@ -309,7 +241,7 @@ export default {
   methods: {
     getCustomers () {
       this.loading = true
-      this.$axios.get(`customers`)
+      this.$axios.get(`customers`, this.headers)
         .then(response => {
           this.customers = response.data.data
           this.loading = false
@@ -319,25 +251,63 @@ export default {
         })
     },
     saveCustomer () {
-      this.$axios.post(`customers`, this.customer)
-        .then(response => {
-          if (response !== null) {
-            this.customers.push(response.data.data)
-            this.$q.notify({
-              color: 'green',
-              position: 'bottom-left',
-              message: 'Save successful'
-            })
-            // this.showForm = false
-          } else {
-            this.$q.notify({
-              color: 'red',
-              position: 'bottom-left',
-              message: 'Something went wrong'
-            })
-          }
-        })
-        .catch(error => console.log(error))
+      if (this.updateMode === false) {
+        this.$axios.post(`customers`, this.customer, this.headers)
+          .then(response => {
+            if (response !== null) {
+              this.customers.push(response.data.data)
+              this.$q.notify({
+                color: 'green',
+                position: 'bottom-right',
+                message: 'Save successful'
+              })
+              // this.showForm = false
+            } else {
+              this.$q.notify({
+                color: 'red',
+                position: 'bottom-right',
+                message: 'Something went wrong'
+              })
+            }
+          })
+          .catch(error => console.log(error))
+      } else {
+        this.$axios.put(`customers/${this.customer.id}`, this.customer, this.headers)
+          .then(response => {
+            if (response !== null) {
+              this.getCustomers()
+              this.$q.notify({
+                color: 'green',
+                position: 'bottom-right',
+                message: 'Save successful'
+              })
+              // this.showForm = false
+            } else {
+              this.$q.notify({
+                color: 'red',
+                position: 'bottom-left',
+                message: 'Something went wrong'
+              })
+            }
+          })
+          .catch(error => console.log(error))
+      }
+    },
+    updateCustomer (customer) {
+      this.showForm = true
+      this.updateMode = true
+      this.customer.id = customer.id
+      this.customer.name = customer.name
+      this.customer.contact_number = customer.contact_number
+      this.customer.address = customer.address
+      this.customer.email = customer.email
+      this.customer.thana_id = customer.thana.id
+      this.customer.district_id = customer.district.id
+      this.customer.country_id = customer.country.id
+      this.customer.reference = customer.reference
+      this.customers.status = customer.status
+      this.$refs.customerForm.resetValidation()
+      console.log(customer)
     },
     getThanas () {
       this.$axios.get(`thanas`)
@@ -415,10 +385,6 @@ export default {
       this.customer.reference = ''
       this.$refs.customerForm.resetValidation()
     }
-    // customerDetail () {
-    //   // console.log(this)
-    //   this.$router.push({ name: 'customers_detail', params: { id: 1 } })
-    // }
   },
   computed: {
     showFormIcon () {
@@ -427,6 +393,15 @@ export default {
       } else {
         return 'clear'
       }
+    },
+    headers () {
+      return {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.$store.state.token
+        }
+      }
     }
   },
   created () {
@@ -434,9 +409,7 @@ export default {
     this.getThanas()
     this.getDistricts()
     this.getCountries()
+    this.$store.dispatch('pageTitle', 'Customers')
   }
 }
 </script>
-
-<style>
-</style>

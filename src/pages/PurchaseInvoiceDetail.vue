@@ -1,12 +1,9 @@
 <template>
   <q-page>
-      <q-card flat bordered>
+      <q-card flat square bordered>
         <q-card-section class="q-pa-sm">
           <div class="row q-col-gutter-sm">
             <div class="col-sm-9 col-md-9 col-xs-12">
-              <div class="row q-col-gutter-sm">
-                <span class="text-h6">Purchase Invoice</span>
-              </div>
               <div class="row q-col-gutter-sm">
                 <div class="col-sm-3 col-md-3 col-xs-5">
                   <q-field dense filled>
@@ -18,7 +15,7 @@
                     </template>
                   </q-field>
                 </div>
-                <div class="col-sm-3 col-md-3 col-xs-7">
+                <div class="col-sm-4 col-md-4 col-xs-7">
                   <q-field dense filled>
                     <template v-slot:prepend>
                       <span class="text-caption">No.</span>
@@ -28,7 +25,7 @@
                     </template>
                   </q-field>
                 </div>
-                <div class="col-sm-6 col-md-6 col-xs-12">
+                <div class="col-sm-5 col-md-5 col-xs-12">
                   <q-field dense filled>
                     <template v-slot:prepend>
                       <span class="text-caption">Supplier:</span>
@@ -52,14 +49,14 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-3 col-md-3 col-xs-12 q-mt-lg">
-              <q-card flat class="q-mt-sm">
+            <div class="col-sm-3 col-md-3 col-xs-12">
+              <q-card flat>
                 <q-card-section class="q-pa-none">
                   <q-field dense class="bg-black" style="height:90px">
                     <template v-slot:control>
                       <div v-cloak class="full-width text-right q-pr-md">
                         <span class="text-h4 text-lime-14">
-                          {{ new Intl.NumberFormat('en-IN').format(purchase_invoice.invoice_total) }}
+                          {{purchase_invoice.invoice_total | currency}}
                         </span>
                       </div>
                     </template>
@@ -76,11 +73,12 @@
             <div class="col-sm-2 col-md-2 col-xs-4">
             </div>
           </div>
-          <div class="row q-col-gutter-sm">
+          <div class="row q-col-gutter-sm q-mt-sm">
             <div class="col-sm-12 col-md-12 col-xs-12">
-              <q-card flat bordered>
+              <q-card flat square bordered>
                 <q-table
                   flat
+                  :table-header-style="{ backgroundColor: '#f0f0f0' }"
                   :data="purchase_invoice.items"
                   :columns="tableColumns"
                   no-data-label="No items added"
@@ -95,8 +93,7 @@
                     <div class="col-sm-7 col-md-7 col-xs-7 text-right">
                       <span class="text-subtitle2 text-bold">Total: </span>
                       <span class="text-subtitle2 text-bold text-black">
-                        {{ new Intl.NumberFormat('en-IN')
-                          .format(purchase_invoice.invoice_total) }}
+                        {{purchase_invoice.invoice_total | currency}}
                       </span>
                     </div>
                   </template>
@@ -112,7 +109,7 @@
                 </template>
                 <template v-slot:control>
                   <div class="full-width text-right">
-                    {{new Intl.NumberFormat('en-IN').format(purchase_invoice.paid_amount)}}
+                    {{purchase_invoice.paid_amount | currency}}
                   </div>
                 </template>
               </q-field>
@@ -124,7 +121,7 @@
                 </template>
                 <template v-slot:control>
                   <div class="full-width text-right">
-                    {{new Intl.NumberFormat('en-IN').format(purchase_invoice.due_amount)}}
+                    {{purchase_invoice.due_amount | currency}}
                   </div>
                 </template>
               </q-field>
@@ -163,7 +160,13 @@ export default {
   }),
   methods: {
     getPurchaseInvoice () {
-      this.$axios.get(`purchase-invoices/${this.$route.params.id}`)
+      this.$axios.get(`purchase-invoices/${this.$route.params.id}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.$store.state.token
+        }
+      })
         .then(response => {
           if (response !== null) {
             this.purchase_invoice = response.data.data
@@ -176,6 +179,12 @@ export default {
   },
   created () {
     this.getPurchaseInvoice()
+    this.$store.dispatch('pageTitle', 'Purchase Invoice Detail')
+  },
+  filters: {
+    currency (v) {
+      return Intl.NumberFormat('en-IN').format(v)
+    }
   }
 }
 </script>

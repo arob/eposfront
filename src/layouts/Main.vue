@@ -1,27 +1,64 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header>
-      <q-toolbar class="bg-primary">
+      <q-toolbar class="bg-primary print-hide">
         <q-btn
-          flat
-          round
+          class="print-hide"
+          flat round
           @click="leftDrawerOpen = !leftDrawerOpen"
           aria-label="Menu"
         >
           <q-icon name="menu" />
         </q-btn>
         <q-toolbar-title>
-          E<span class="text-weight-bold">POS</span>
+          E<span class="text-weight-bold">POS</span> - {{pageTitle}}
         </q-toolbar-title>
-        <div>POS in the Cloud</div>
+
+        <q-btn
+          stretch flat label="Home"
+          icon="home" to="/"
+        />
+        <q-btn
+          stretch flat label="Sales"
+          icon="add_shopping_cart" to="/sales-invoice"
+        />
+        <q-btn
+          v-show="!this.$store.state.isLoggedIn"
+          icon="mdi-login"
+          stretch flat label="Login" to="/login"
+        />
+        <q-btn-dropdown
+          :label="user + ' (' + userType + ')'"
+          v-show="this.$store.state.isLoggedIn" stretch flat>
+          <q-list>
+            <q-item clickable v-close-popup tabindex="0" @click="logout">
+              <q-item-section>
+                <q-item-label>Logout</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="mdi-logout" />
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup tabindex="0" to="/profile">
+              <q-item-section>
+                <q-item-label>Profile</q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-icon name="person" />
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
       </q-toolbar>
     </q-header>
     <q-drawer
-      :width="260"
+      v-if="isLoggedIn"
+      :width="280"
       v-model="leftDrawerOpen"
       :mini="!leftDrawerOpen || miniState"
       bordered
       content-class="bg-grey-4"
+      class="print-hide"
     >
       <q-list>
         <q-item clickable @click="drawerClick">
@@ -29,17 +66,14 @@
             <q-icon class="text-center" name="mdi-arrow-left-right-bold-outline" />
           </q-item-section>
           <q-item-section>
-            <!-- <q-item-label></q-item-label> -->
-            <!-- <q-item-label caption>v1.quasar-framework.org</q-item-label> -->
           </q-item-section>
         </q-item>
-        <q-item clickable to="/">
+        <q-item clickable to="/dashboard">
           <q-item-section avatar>
-            <q-icon name="mdi-home" />
+            <q-icon name="dashboard" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Home</q-item-label>
-            <!-- <q-item-label caption>v1.quasar-framework.org</q-item-label> -->
+            <q-item-label>Dashboard</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable to="/sales-invoice">
@@ -52,15 +86,15 @@
         </q-item>
         <q-item clickable to="/sales-invoice-list">
           <q-item-section avatar>
-            <q-icon name="add_shopping_cart" />
+            <q-icon name="mdi-view-list" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Sales Invoice List</q-item-label>
+            <q-item-label>Sales Invoices</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable to="/purchase-invoice">
           <q-item-section avatar>
-            <q-icon name="mdi-file-document-box-multiple-outline" />
+            <q-icon name="mdi-plus-outline" />
           </q-item-section>
           <q-item-section>
             <q-item-label>New Purchase</q-item-label>
@@ -71,7 +105,7 @@
             <q-icon name="mdi-receipt" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Purchase Invoice List</q-item-label>
+            <q-item-label>Purchase Invoices</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable to="/customers">
@@ -111,6 +145,22 @@
           label="Master"
           icon="mdi-database"
         >
+          <q-item clickable to="/acc-voucher">
+            <q-item-section avatar>
+              <q-icon name="money" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Account Vouchers</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item clickable to="/acc-heads">
+            <q-item-section avatar>
+              <q-icon name="money" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Account Heads</q-item-label>
+            </q-item-section>
+          </q-item>
           <q-item clickable to="/products">
             <q-item-section avatar>
               <q-icon name="mdi-bag-personal" />
@@ -151,6 +201,14 @@
               <q-item-label>Places</q-item-label>
             </q-item-section>
           </q-item>
+          <q-item clickable to="/user">
+            <q-item-section avatar>
+              <q-icon name="person" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Users</q-item-label>
+            </q-item-section>
+          </q-item>
           <!-- <q-item clickable to="/experiments">
             <q-item-section avatar>
               <q-icon name="mdi-test-tube" />
@@ -159,6 +217,14 @@
               <q-item-label>Experiments</q-item-label>
             </q-item-section>
           </q-item> -->
+          <q-item clickable to="/company">
+            <q-item-section avatar>
+              <q-icon name="mdi-office-building" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Company Info</q-item-label>
+            </q-item-section>
+          </q-item>
         </q-expansion-item>
       </q-list>
     </q-drawer>
@@ -169,6 +235,8 @@
 </template>
 
 <script>
+
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Main',
@@ -192,13 +260,41 @@ export default {
       // intended for switching drawer to "normal" mode only
       e.stopPropagation()
     // }
+    },
+    logout () {
+      this.$store.dispatch('logout')
+      this.$router.push('/login')
     }
+  },
+  computed: {
+    user () {
+      return this.$store.state.user
+        ? this.$store.state.user.name : 'LOGIN'
+    },
+    userType () {
+      return this.$store.state.user
+        ? this.$store.state.user.type : ''
+    },
+    isAdmin () {
+      return this.$store.state.user
+        ? this.$store.state.user.type === 'admin' : false
+    },
+    ...mapGetters([
+      'isLoggedIn',
+      'pageTitle'
+    ])
   }
 }
 </script>
 
-<style>
-html {
-  overflow-y: scroll;
-}
+<style scoped>
+  html {
+    overflow-y: scroll;
+  }
+  .q-router-link--exact-active {
+    background-color: #40a747;
+  }
+  .q-router-link--active {
+    color: #fff;
+  }
 </style>

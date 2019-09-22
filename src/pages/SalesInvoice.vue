@@ -7,11 +7,6 @@
             <q-card flat square bordered>
               <q-card-section class="q-pa-sm">
                 <div class="row q-col-gutter-md">
-                  <div class="col-sm-6 col-md-6 col-xs-12">
-                    <span class="text-h6">Sales Invoice</span>
-                  </div>
-                </div>
-                <div class="row q-col-gutter-md">
                   <div class="col-sm-3 col-md-3 col-xs-12">
                     <q-select
                       dense no-error-icon
@@ -23,6 +18,7 @@
                       option-value="id"
                       option-label="type"
                       map-options emit-value
+                      @input="setPaidAmount"
                     ></q-select>
                   </div>
                    <div class="col-sm-4 col-md-4 col-xs-6">
@@ -54,33 +50,7 @@
                       option-value="id"
                       :option-label="customer => customer ? customer.name + ' (' + customer.contact_number +')' : ''"
                       map-options emit-value
-                    >
-                      <template v-slot:append>
-                        <q-btn dense flat color="grey-5" icon="mdi-refresh" @click="getCustomers">
-                          <q-tooltip
-                            content-class="bg-amber text-black shadow-4"
-                            transition-show="scale"
-                            transition-hide="scale"
-                          >
-                          Reload customer list
-                        </q-tooltip>
-                        </q-btn>
-                      </template>
-                      <template v-slot:after>
-                        <q-btn
-                          dense outline color="secondary" icon="add"
-                          @click="addCustomer('customers')"
-                        >
-                          <q-tooltip
-                              content-class="bg-amber text-black shadow-4"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                            Add a new Customer
-                          </q-tooltip>
-                        </q-btn>
-                      </template>
-                    </q-select>
+                    ></q-select>
                   </div>
                   <div class="col-sm-5 col-md-5 col-xs-12">
                     <q-input
@@ -110,10 +80,10 @@
         <!-- <q-card flat bordered class="q-mt-sm"> -->
           <!-- <q-card-section class="q-pa-sm"> -->
             <div class="row q-col-gutter-xs q-mt-md">
-              <div class="col-sm-4 col-md-4 col-xs-12">
+              <div class="col-sm-3 col-md-3 col-xs-12">
                 <q-select
-                    dense no-error-icon use-input outlined square
-                    hide-dropdown-icon
+                    dense no-error-icon use-input
+                    outlined square hide-dropdown-icon
                     transition-show="scale"
                     transition-hide="scale"
                     ref="selectProduct"
@@ -156,37 +126,47 @@
                     </template>
                   </q-select>
               </div>
-              <div class="col-sm-2 col-md-2 col-xs-4">
+              <div class="col-sm-1 col-md-1 col-xs-4">
                 <q-input
-                  dense filled square no-error-icon
-                  stack-label
+                  dense filled readonly square
+                  no-error-icon stack-label
                   ref="productPrice"
                   label="Price"
                   v-model="product_rate"
                 ></q-input>
               </div>
+
               <div class="col-sm-1 col-md-1 col-xs-4">
                 <q-input
-                  dense filled square no-error-icon
-                  stack-label label="VAT"
+                  dense filled readonly square
+                  no-error-icon stack-label
+                  label="VAT"
                   ref="vatAmount"
                   v-model.number="vat_amount"
                 ></q-input>
               </div>
               <div class="col-sm-1 col-md-1 col-xs-4">
                 <q-input
-                  dense filled square no-error-icon
-                  stack-label
+                  dense filled readonly square
+                  no-error-icon stack-label
                   label="Tax"
                   ref="taxAmount"
                   v-model.number="tax_amount"
                 ></q-input>
               </div>
+              <div class="col-sm-2 col-md-2 cl-xs-12">
+                <q-input
+                  dense no-error-icon outlined
+                  square stack-label
+                  label="Product Serial"
+                  v-model="product_serial"
+                ></q-input>
+              </div>
               <div class="col-sm-1 col-md-1 col-xs-4">
                 <q-input
-                  dense no-error-icon outlined square
+                  dense no-error-icon outlined square stack-label
                   ref="discountAmount"
-                  stack-label label="Discount"
+                  label="Discount"
                   type="number"
                   min="0"
                   v-model="discount_amount"
@@ -195,8 +175,7 @@
               </div>
               <div class="col-sm-1 col-md-1 col-xs-4">
                 <q-input class="text-right full-width"
-                  dense no-error-icon outlined square
-                  stack-label
+                  dense no-error-icon outlined square stack-label
                   label="Quantity"
                   type="number"
                   ref="quantity"
@@ -214,7 +193,7 @@
                   </template>
                   <template v-slot:after>
                     <q-btn
-                      dense color="secondary"
+                      dense outline color="secondary"
                       class="full-width" icon="add"
                       @click="addItem"
                     ></q-btn>
@@ -222,16 +201,14 @@
                 </q-field>
               </div>
             </div>
-          <!-- </q-card-section> -->
-        <!-- </q-card> -->
-        <q-table
-          flat grid bordered
-          hide-header
-          :data="sales_invoice.items"
-          :columns="tableColumns"
-          no-data-label="No items added"
-          row-key="__index"
-        >
+          <q-table
+            flat grid
+            hide-header
+            :data="sales_invoice.items"
+            :columns="salesItemsColumns"
+            no-data-label="No items added"
+            row-key="__index"
+          >
           <template v-slot:item="props">
             <q-card square flat class="full-width q-mt-xs">
               <q-card-section class="q-pa-sm">
@@ -240,27 +217,33 @@
                     <span class="text-subtitle1">
                       {{props.row.model}} ({{props.row.name}})
                     </span>
-                   <br />
+                    <br />
                     <span class="text-caption text-italic"
-                      v-show="props.row.product_rate > 0"
+                    v-show="props.row.product_rate > 0"
                     >
                       Price {{props.row.product_rate | currency}}
                     </span>
-                      <span
-                        class="text-caption text-italic"
-                        v-show="props.row.vat_pct > 0"
-                      >
-                        VAT ({{props.row.vat_pct}}%): {{props.row.vat_amount | currency}}
-                      </span>
-                      <span class="text-caption text-italic"
-                        v-show="props.row.tax_pct > 0"
-                      >
-                        Tax ({{props.row.tax_pct}}%): {{props.row.tax_amount | currency}}
-                      </span>
-                      <span class="text-caption text-italic"
-                        v-show="props.row.discount_amount > 0">
-                        Discount: {{props.row.discount_amount | currency}}
-                      </span>
+                    <span
+                      class="text-caption text-italic"
+                      v-show="props.row.vat_pct > 0"
+                    >
+                      VAT ({{props.row.vat_pct}}%): {{props.row.vat_amount | currency}}
+                    </span>
+                    <span class="text-caption text-italic"
+                      v-show="props.row.tax_pct > 0"
+                    >
+                      Tax ({{props.row.tax_pct}}%): {{props.row.tax_amount | currency}}
+                    </span>
+                    <span class="text-caption text-italic"
+                      v-show="props.row.product_serial != ''"
+                    >
+                      Product Serial: {{product_serial}}
+                    </span>
+                    <span class="text-caption text-italic"
+                      v-show="props.row.discount_amount > 0"
+                    >
+                      Discount: {{props.row.discount_amount | currency}}
+                    </span>
                   </div>
                   <div class="col-sm-1 col-md-1 col-xs-6 q-mt-sm">
                     {{props.row.product_qty}}
@@ -290,56 +273,158 @@
           </template>
           <template v-slot:bottom>
             <div class="col-sm-5 col-md-5 col-xs-5">
-              <span class="text-subtitle2 text-bold">Records: </span>
+              <span class="text-subtitle2 text-bold">Total Records: </span>
               <span class="text-subtitle2 text-bold text-black">
                 {{ sales_invoice.items.length }}</span>
             </div>
             <div class="col-sm-7 col-md-7 col-xs-7 text-right">
-              <span class="text-subtitle2 text-bold">Total: </span>
+              <span class="text-subtitle2 text-bold">Total Amount: </span>
               <span class="text-subtitle2 text-bold text-black">
                 {{ grandTotal | currency }}
               </span>
             </div>
           </template>
         </q-table>
-        <div class="row q-col-gutter-sm q-mt-md">
-          <div class="col-sm-3 col-md-3 col-xs-12 offset-sm-9 offset-md-9 offset-xs-none">
-            <q-input
-              dense outlined square
-              class="full-width text-right"
-              :input-style="{textAlign: 'right'}"
-              v-model="sales_invoice.paid_amount"
+        <div class="row q-col-gutter-sm">
+          <div class="col-sm-7 col-md-7 col-xs-12">
+            <q-card
+              flat square bordered
+              class="q-pa-sm"
+              v-show="sales_invoice.sales_type !== 0"
             >
-              <template v-slot:prepend>
-                <div class="full-width text-right">
-                  <span class="text-body1">Paid</span>
+              <q-form ref="installmentForm" id="installmentForm" @submit="addInstallment">
+                <div class="row q-col-gutter-sm">
+                    <div class="col-sm-2 col-md-2 col-xs-12">
+                      <q-input
+                        dense required no-error-icon
+                        ref="installmentNumber"
+                        label="EMI Number"
+                        v-model="installment.installment_number"
+                      ></q-input>
+                    </div>
+                    <div class="col-sm-3 col-md-3 col-xs-12">
+                      <q-input
+                        dense required no-error-icon
+                        ref="installmentAmount"
+                        label="Amount"
+                        v-model="installment.installment_amount"
+                      ></q-input>
+                    </div>
+                    <div class="col-sm-4 col-md-4 col-xs-12">
+                      <q-input
+                        dense filled no-error-icon
+                        ref="installmentDate"
+                        v-model="installment.due_date"
+                        mask="date"
+                        :rules="['date']">
+                        <template v-slot:prepend>
+                          <q-icon
+                            name="event"
+                            class="cursor-pointer">
+                            <q-popup-proxy ref="qDateProxy"
+                              transition-show="scale" transition-hide="scale">
+                              <q-date
+                                v-model="installment.due_date"
+                                @input="() => $refs.qDateProxy.hide()"
+                              />
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
+                    </div>
+                    <div class="col-sm-1 col-md-1 col-xs-12">
+                      <q-btn
+                        outline dense
+                        icon="add"
+                        type="submit"
+                        color="secondary"
+                        @submit.prevent="addInstallment"
+                      ></q-btn>
+                      <!-- <q-input
+                        type="submit"
+                        icon="add"
+                      ></q-input> -->
+                    </div>
+                  <div class="col-sm-2 col-md-2 col-xs-12">
+                    <div class="text-grey-7 text-right">Remains: <br>
+                    {{dueAmount - remainingAmount}}</div>
+                  </div>
                 </div>
-              </template>
-            </q-input>
+              </q-form>
+              <div class="row q-col-gutter-sm">
+                <div class="col-sm-12 col-md-12 col-xs-12">
+                  <q-table
+                    flat dense
+                    :table-header-style="{ backgroundColor: '#f0f0f0' }"
+                    no-data-label="No installment added"
+                    :columns="installmentTableColumns"
+                    :data="sales_invoice.installments"
+                  >
+                    <q-td slot="body-cell-update" slot-scope="props" :props="props">
+                      <q-btn
+                        round icon="remove" size="12px" color="secondary"
+                        @click="removeInstallment(props.row.__index)"
+                      >
+                        {{ props.value }}
+                      </q-btn>
+                    </q-td>
+                  </q-table>
+                </div>
+              </div>
+            </q-card>
           </div>
-          <div class="col-sm-3 col-md-3 col-xs-12 offset-sm-9 offset-md-9 offset-xs-none">
-            <q-field
-              dense filled square v-show="sales_invoice.sales_type !== 0"
-            >
-              <template v-slot:control>
-                <div class="full-width text-right">
-                  {{dueAmount | currency}}
+          <div class="col-sm-4 col-md-4 col-xs-12 offset-sm-1 offset-md-1 offset-xs-none">
+            <q-card flat bordered class="q-pa-sm full-height">
+              <q-input
+                dense outlined square
+                class="full-width text-right"
+                :input-style="{textAlign: 'right'}"
+                v-model="sales_invoice.paid_amount"
+                :readonly="sales_invoice.sales_type === 0"
+              >
+                <template v-slot:prepend>
+                  <div class="full-width text-right">
+                    <span class="text-body1">Paid</span>
+                  </div>
+                </template>
+              </q-input>
+              <q-field class="q-mt-sm"
+                dense filled square
+              >
+                <template v-slot:control>
+                  <div class="full-width text-right">
+                    {{dueAmount | currency}}
+                  </div>
+                </template>
+                <template v-slot:prepend>
+                  <div class="full-width">
+                    <span class="text-body1">Due</span>
+                  </div>
+                </template>
+              </q-field>
+              <div class="row q-col-gutter-sm">
+                <div class="col-sm-6 col-md-6 col-xs-12">
+                  <q-btn
+                    square dense
+                    v-show="sales_invoice.items.length > 0"
+                    label="save" icon="save" color="primary"
+                    class="full-width print-hide q-mt-md"
+                    @click="saveInvoice"
+                  >
+                  </q-btn>
                 </div>
-              </template>
-              <template v-slot:prepend>
-                <div class="full-width">
-                  <span class="text-body1">Due</span>
+                <div class="col-sm-6 col-md-6 col-xs-12">
+                  <q-btn
+                    square dense
+                    v-show="sales_invoice.items.length > 0"
+                    label="save & preview" icon="save" color="primary"
+                    class="full-width print-hide q-mt-md"
+                    @click="savenPreview"
+                  >
+                  </q-btn>
                 </div>
-              </template>
-            </q-field>
-          </div>
-          <div class="col-sm-3 col-md-3 col-xs-12 offset-sm-9 offset-md-9 offset-xs-none">
-            <q-btn
-              dense square v-show="sales_invoice.items.length > 0"
-              label="save" icon="save" color="primary" class="full-width"
-              @click="saveInvoice"
-            >
-            </q-btn>
+              </div>
+            </q-card>
           </div>
         </div>
       </q-card-section>
@@ -349,7 +434,7 @@
 
 <script>
 
-import { date, openURL } from 'quasar'
+import { date } from 'quasar'
 
 export default {
   name: 'SalesInvoice',
@@ -368,9 +453,11 @@ export default {
       paid_amount: 0,
       user_id: 1,
       notes: '',
-      items: []
+      items: [],
+      installments: []
     },
     product_qty: '',
+    product_serial: '',
     product_rate: '',
     discount_pct: '',
     discount_amount: '',
@@ -385,68 +472,94 @@ export default {
     productOptions: [],
     selectedItem: '',
     selected: null,
-    tableColumns: [
+    salesItemsColumns: [
       {
         name: 'name',
-        align: 'left',
-        label: 'Name',
         field: 'name',
+        label: 'Name',
+        align: 'left',
         sortable: true
       },
       {
         name: 'model',
-        align: 'left',
-        label: 'Model',
         field: 'model',
+        label: 'Model',
+        align: 'left',
         sortable: true
       },
       {
         name: 'price',
-        align: 'right',
+        field: 'product_rate',
         label: 'Price',
-        field: 'product_rate'
+        align: 'right'
       },
       {
-        name: 'discount',
-        align: 'right',
+        name: 'discount_amount',
+        field: 'discount_amount',
         label: 'Discount',
-        field: 'discount_amount'
+        align: 'right'
       },
       {
-        name: 'vat',
-        align: 'right',
+        name: 'vat_Amount',
+        field: 'vat_amount',
         label: 'VAT Amount',
-        field: 'vat_amount'
+        align: 'right'
       },
       {
-        name: 'tax',
-        align: 'right',
+        name: 'tax_amount',
+        field: 'tax_amount',
         label: 'Tax Amount',
-        field: 'tax_amount'
+        align: 'right'
       },
       {
         name: 'sales_rate',
-        align: 'right',
+        field: 'sales_rate',
         label: 'Sales Price',
-        field: 'sales_rate'
+        align: 'right'
       },
       {
-        name: 'quantity',
-        align: 'right',
+        name: 'product_qty',
+        field: 'product_qty',
         label: 'Quantity',
-        field: 'product_qty'
+        align: 'right'
       },
       {
         name: 'subtotal',
-        align: 'right',
+        field: 'subtotal',
         label: 'Subtotal',
-        field: 'subtotal'
+        align: 'right'
       }
-    ]
+    ],
+    installmentTableColumns: [
+      {
+        name: 'installment_number',
+        field: 'installment_number',
+        label: 'EMI Number',
+        align: 'left'
+      },
+      {
+        name: 'installment_amount',
+        field: 'installment_amount',
+        label: 'Amount',
+        align: 'right'
+      },
+      {
+        name: 'due_date',
+        field: 'due_date',
+        label: 'Due Date',
+        align: 'left'
+      },
+      { name: 'update', align: 'right', label: 'Update' }
+    ],
+    installment: {
+      installment_number: '',
+      installment_amount: '',
+      due_date: ''
+    }
   }),
   methods: {
     getCustomers () {
-      this.$axios.get(`customers`)
+      this.$axios.get(`customers`, this.headers)
         .then(response => {
           if (response !== null) {
             this.customers = response.data.data
@@ -472,7 +585,7 @@ export default {
     },
     getProducts () {
       this.loading = true
-      this.$axios.get(`salable-products`)
+      this.$axios.get(`salable-products`, this.headers)
         .then(response => {
           if (response !== null) {
             this.products = response.data.data
@@ -500,6 +613,7 @@ export default {
     productSelected () {
       this.product_rate = this.selected.sales_rate
       this.product_qty = 1
+      this.product_serial = this.product_serial
       this.vat_pct = this.selected.vat_pct
       this.tax_pct = this.selected.tax_pct
       this.discount_pct = this.selected.discount_pct
@@ -524,6 +638,7 @@ export default {
           tax_pct: this.tax_pct,
           vat_amount: this.vat_amount,
           tax_amount: this.tax_amount,
+          product_serial: this.product_serial,
           subtotal: this.subtotal
         }
         this.sales_invoice.items.push(this.selectedItem)
@@ -546,30 +661,75 @@ export default {
         this.$q.notify({
           message: 'Please select a product',
           color: 'red',
-          position: 'bottom-left'
+          position: 'bottom-right',
+          closeBtn: 'close'
         })
       }
     },
     removeItem (index) {
       this.sales_invoice.items.splice(index, 1)
       this.sales_invoice.invoice_total = this.grandTotal
+      if (this.sales_invoice.sales_type === 0) {
+        this.sales_invoice.paid_amount = this.grandTotal
+      }
     },
     saveInvoice () {
       console.log(this.sales_invoice)
-      this.$axios.post(`sales-invoices`, this.sales_invoice)
+      this.$axios.post(`sales-invoices`, this.sales_invoice, this.headers)
         .then(response => {
           console.log(response)
           this.$q.notify({
             color: 'green',
             icon: 'success',
-            position: 'bottom-left',
-            message: 'Save successfull'
+            position: 'bottom-right',
+            message: 'Save successfull',
+            closeBtn: 'close'
           })
+          this.$router.push(`/sales-invoice-list`)
         })
         .catch(error => console.log(error))
     },
-    addCustomer (url) {
-      openURL(url)
+    savenPreview () {
+      console.log(this.sales_invoice)
+      this.$axios.post(`sales-invoices`, this.sales_invoice, this.headers)
+        .then(response => {
+          // console.log(response)
+          this.$q.notify({
+            color: 'green',
+            icon: 'success',
+            position: 'bottom-right',
+            message: 'Save successfull',
+            closeBtn: 'close'
+          })
+          // console.log(response.data.data.id)
+          this.$router.push(`/print/sales-invoices/${response.data.data.id}`)
+        })
+        .catch(error => console.log(error))
+    },
+    setPaidAmount () {
+      if (this.sales_invoice.sales_type === 0) {
+        this.sales_invoice.paid_amount = this.grandTotal
+        console.log(this.grandTotal)
+      }
+    },
+    addInstallment () {
+      console.log('add installment')
+      let installment = {
+        installment_number: this.installment.installment_number,
+        installment_amount: this.installment.installment_amount,
+        due_date: this.installment.due_date
+      }
+      this.sales_invoice.installments.push(installment)
+      this.$refs.installmentNumber = ''
+      this.$refs.installmentAmount.focus()
+      this.$refs.installmentForm.reset()
+    },
+    removeInstallment (index) {
+      console.log(index)
+      this.sales_invoice.installments.splice(index, 1)
+    },
+    saveInstallments () {
+      console.log('save installment')
     }
   },
   computed: {
@@ -583,10 +743,33 @@ export default {
       if (this.sales_invoice.items.length > 0) {
         let amount = this.sales_invoice.items
           .map(item => item.subtotal)
-          .reduce((acc, curr) => acc + curr)
+          .reduce((acc, curr) => Number(acc) + Number(curr))
         return amount
       } else {
         return 0
+      }
+    },
+    remainingAmount () {
+      if (this.sales_invoice.installments.length > 0) {
+        let amount = this.sales_invoice.installments
+          .map(item => item.installment_amount)
+          .reduce((acc, curr) => Number(acc) + Number(curr))
+        console.log(amount)
+        return amount
+      } else {
+        return Number(this.dueAmount)
+      }
+    },
+    installmentNumber () {
+      return this.installments.length + 1
+    },
+    headers () {
+      return {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.$store.state.token
+        }
       }
     },
     dueAmount () {
@@ -596,6 +779,7 @@ export default {
   created () {
     this.getCustomers()
     this.getProducts()
+    this.$store.dispatch('pageTitle', 'Sales Invoice')
   },
   filters: {
     currency (v) {

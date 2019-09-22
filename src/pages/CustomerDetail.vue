@@ -10,11 +10,14 @@
                   <div class="col-sm-7 col-md-7 col-xs-8">
                     <span class="text-h6">{{customer.name}}</span> <br />
                     <span class="text-bold">{{customer.contact_number}}</span><br />
+                    <span v-show="customer.email">{{customer.email}}</span> <br />
                     <span v-show="customer.reference">Ref: {{customer.reference}}</span>
                   </div>
                   <div class="col-sm-5 col-md-5 col-xs-8">
-                    {{customer.address}}, {{customer.thana}} <br>
-                    {{customer.district}}, {{customer.country}}
+                    {{customer.address ? customer.address : ''}},
+                    {{customer.thana ? customer.thana.name : ''}} <br>
+                    {{customer.district ? customer.district.name : ''}},
+                    {{customer.country ? customer.country.name: ''}}
                   </div>
                 </div>
               </q-card-section>
@@ -78,6 +81,7 @@
                     <q-table
                       title="Invoice History"
                       dense flat square wrap-cells
+                      :table-header-style="{ backgroundColor: '#f0f0f0' }"
                       :data="customer.invoices"
                       :loading="loading"
                       :columns="tableColumns"
@@ -172,9 +176,15 @@ export default {
   }),
   methods: {
     getCustomer () {
-      this.$axios.get(`customers/${this.$route.params.id}`)
+      this.$axios.get(`customers/${this.$route.params.id}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.$store.state.token
+        }
+      })
         .then(response => {
-          console.log(response.data.data)
+          // console.log(response.data.data)
           this.customer = response.data.data
         })
     }
@@ -205,6 +215,7 @@ export default {
   },
   created () {
     this.getCustomer()
+    this.$store.dispatch('pageTitle', 'Customer Detail')
   },
   filters: {
     currency (v) {

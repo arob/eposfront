@@ -25,14 +25,14 @@ module.exports = function (ctx) {
       // all: true, // --- includes everything; for dev only!
 
       components: [
-        'QSlideTransition',
         'QLayout',
-        'QHeader',
-        'QDrawer',
-        'QPageContainer',
         'QPage',
+        'QPageContainer',
+        'QDrawer',
         'QToolbar',
         'QToolbarTitle',
+        'QSlideTransition',
+        'QHeader',
         'QBtn',
         'QCheckbox',
         'QBtnGroup',
@@ -58,11 +58,13 @@ module.exports = function (ctx) {
         'QTd',
         'QSelect',
         'QToggle',
-        'QDate'
+        'QDate',
+        'QPopupProxy'
       ],
 
       directives: [
-        'Ripple'
+        'Ripple',
+        'ClosePopup'
       ],
 
       // Quasar plugins
@@ -113,9 +115,6 @@ module.exports = function (ctx) {
 
     // animations: 'all' --- includes all animations
     animations: [
-      'bounceInLeft',
-      'fadeInRight',
-      'fadeIn'
     ],
 
     ssr: {
@@ -126,9 +125,9 @@ module.exports = function (ctx) {
       // workboxPluginMode: 'InjectManifest',
       // workboxOptions: {},
       manifest: {
-        // name: 'Quasar App',
-        // short_name: 'Quasar-PWA',
-        // description: 'Best PWA App in town!',
+        name: 'EPOS',
+        short_name: 'EPOS',
+        description: 'POS in the Cloud!',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

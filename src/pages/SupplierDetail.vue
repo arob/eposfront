@@ -12,8 +12,10 @@
                     <span class="text-bold">{{supplier.contact_number}}</span><br />
                   </div>
                   <div class="col-sm-5 col-md-5 col-xs-8">
-                    {{supplier.address}}, {{supplier.thana}} <br />
-                    {{supplier.district}}, {{supplier.country}} <br />
+                    {{supplier.address}},
+                    {{supplier.thana ? supplier.thana.name : ''}} <br />
+                    {{supplier.district ? supplier.district.name : ''}},
+                    {{supplier.country ? supplier.country.name : ''}} <br />
                     {{supplier.email}}
                   </div>
                 </div>
@@ -172,7 +174,13 @@ export default {
   }),
   methods: {
     getSupplier () {
-      this.$axios.get(`suppliers/${this.$route.params.id}`)
+      this.$axios.get(`suppliers/${this.$route.params.id}`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.$store.state.token
+        }
+      })
         .then(response => {
           console.log(response.data.data)
           this.supplier = response.data.data
@@ -205,6 +213,7 @@ export default {
   },
   created () {
     this.getSupplier()
+    this.$store.dispatch('pageTitle', 'Supplier Detail')
   },
   filters: {
     currency (v) {

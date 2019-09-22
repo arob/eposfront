@@ -92,9 +92,7 @@ export default {
 
   created () {
     this.getProducts()
+    this.$store.dispatch('pageTitle', 'Experiment')
   }
 }
 </script>
-
-<style>
-</style>

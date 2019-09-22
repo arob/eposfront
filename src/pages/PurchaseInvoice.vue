@@ -8,9 +8,6 @@
               <q-card flat square bordered class="q-mb-md">
                 <q-card-section class="q-pa-sm">
                   <div class="row q-col-gutter-sm">
-                    <span class="text-h6">Purchase Invoice</span>
-                  </div>
-                  <div class="row q-col-gutter-sm">
                     <div class="col-sm-3 col-md-3 col-xs-5">
                       <q-input
                         dense no-error-icon ref="invoice_date"
@@ -77,22 +74,22 @@
             </div>
             <div class="col-sm-3 col-md-3 col-xs-12">
               <q-card flat square>
-                  <q-field dense square class="bg-grey-14">
-                    <template v-slot:control>
-                      <q-tooltip
-                        content-class="bg-amber text-black shadow-4"
-                        transition-show="scale"
-                        transition-hide="scale"
-                      >
-                        Grand total
-                      </q-tooltip>
-                      <div class="full-width text-right q-pr-sm">
-                        <span class="text-h4 text-lime-14">
-                          {{grandTotal | currency}}
-                        </span>
-                      </div>
-                    </template>
-                  </q-field>
+                <q-field dense square class="bg-grey-14">
+                  <template v-slot:control>
+                    <q-tooltip
+                      content-class="bg-amber text-black shadow-4"
+                      transition-show="scale"
+                      transition-hide="scale"
+                    >
+                      Grand total
+                    </q-tooltip>
+                    <div class="full-width text-right q-pr-sm">
+                      <span class="text-h4 text-lime-14">
+                        {{grandTotal | currency}}
+                      </span>
+                    </div>
+                  </template>
+                </q-field>
               </q-card>
             </div>
           </div>
@@ -167,7 +164,7 @@
                 </template>
                 <template v-slot:after>
                   <q-btn
-                    dense square color="secondary"
+                    dense outline color="secondary"
                     class="full-width" icon="add"
                     @click="addItem"
                   >
@@ -187,6 +184,7 @@
             <div class="col-sm-12 col-md-12 col-xs-12">
               <q-table
                 flat square bordered
+                :table-header-style="{ backgroundColor: '#f0f0f0'}"
                 :pagination.sync="pagination"
                 :data="purchase_invoice.items"
                 :columns="tableColumns"
@@ -310,7 +308,7 @@ export default {
   }),
   methods: {
     getSuppliers () {
-      this.$axios.get(`suppliers`)
+      this.$axios.get(`suppliers`, this.headers)
         .then(response => {
           if (response !== null) {
             this.suppliers = response.data.data
@@ -320,7 +318,7 @@ export default {
     },
     getProducts () {
       this.loading = true
-      this.$axios.get(`active-products`)
+      this.$axios.get(`active-products`, this.headers)
         .then(response => {
           if (response !== null) {
             this.products = response.data.data
@@ -386,7 +384,7 @@ export default {
         this.$q.notify({
           color: 'red',
           icon: 'warning',
-          position: 'bottom-left',
+          position: 'bottom-right',
           message: 'Please check product, quantity and rate'
         })
       }
@@ -398,13 +396,13 @@ export default {
     },
     saveInvoice () {
       console.log(this.purchase_invoice)
-      this.$axios.post(`purchase-invoices`, this.purchase_invoice)
+      this.$axios.post(`purchase-invoices`, this.purchase_invoice, this.headers)
         .then(response => {
           console.log(response)
           this.$q.notify({
             color: 'green',
             icon: 'success',
-            position: 'bottom-left',
+            position: 'bottom-right',
             message: 'Save successfull'
           })
         })
@@ -414,6 +412,7 @@ export default {
   created () {
     this.getSuppliers()
     this.getProducts()
+    this.$store.dispatch('pageTitle', 'Purchase Invoice')
   },
   computed: {
     subtotal () {
@@ -431,6 +430,15 @@ export default {
     },
     dueAmount () {
       return this.grandTotal - this.purchase_invoice.paid_amount
+    },
+    headers () {
+      return {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.$store.state.token
+        }
+      }
     }
   },
   filters: {

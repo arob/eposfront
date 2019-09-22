@@ -66,48 +66,49 @@
           </div>
         </q-slide-transition>
         <q-card flat bordered>
-          <q-table
-            flat
-            :filter="filter"
-            :data="manufacturers"
-            :loading="loading"
-            :columns="tableColumns"
-            :pagination.sync="pagination"
-            row-key="id"
-          >
-            <template v-slot:top-left>
-              <span class="text-h6">Manufacturers</span>
-            </template>
-            <template v-slot:top-right>
-              <q-input dense debounce="300" color="primary" v-model="filter">
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-              <q-btn
-                round size="12px" color="red"
-                :icon="showFormIcon"
-                class="q-mb-none q-ml-md float-right"
-                @click="showForm = !showForm"
-              >
-              </q-btn>
-            </template>
-            <q-td slot="body-cell-update" slot-scope="props" :props="props">
-              <q-btn-group>
+          <q-card-section class="q-pa-sm">
+            <q-table
+              flat
+              :table-header-style="{ backgroundColor: '#f0f0f0' }"
+              :filter="filter"
+              :data="manufacturers"
+              :loading="loading"
+              :columns="tableColumns"
+              :pagination.sync="pagination"
+              row-key="id"
+            >
+              <template v-slot:top-right>
+                <q-input dense debounce="300" color="primary" v-model="filter">
+                  <template v-slot:append>
+                    <q-icon name="search" />
+                  </template>
+                </q-input>
                 <q-btn
-                  dense color="primary" icon="visibility"
-                  class="q-px-sm"
-                  :to="{name: 'manufacturer-detail', params: {id: props.value}}"
-                />
-                <q-btn
-                  dense color="secondary"
-                  icon="mdi-square-edit-outline"
-                  class="q-px-sm"
+                  round size="12px" color="red"
+                  :icon="showFormIcon"
+                  class="q-mb-none q-ml-md float-right"
+                  @click="showForm = !showForm"
                 >
                 </q-btn>
-              </q-btn-group>
-            </q-td>
-          </q-table>
+              </template>
+              <q-td slot="body-cell-update" slot-scope="props" :props="props">
+                <q-btn-group>
+                  <q-btn
+                    dense color="primary" icon="visibility"
+                    class="q-px-sm"
+                    :to="{name: 'manufacturer-detail', params: {id: props.value}}"
+                  />
+                  <q-btn
+                    dense color="secondary"
+                    icon="mdi-square-edit-outline"
+                    class="q-px-sm"
+                    @click="updateManufacturer(props.row)"
+                  >
+                  </q-btn>
+                </q-btn-group>
+              </q-td>
+            </q-table>
+          </q-card-section>
         </q-card>
       </div>
     </div>
@@ -124,6 +125,7 @@ export default {
     manufacturers: [],
     loading: false,
     manufacturer: {
+      id: '',
       name: '',
       short_name: '',
       country_id: '',
@@ -151,23 +153,39 @@ export default {
         })
     },
     saveManufacturer () {
-      this.$axios.post(`manufacturers`, this.manufacturer)
-        .then(response => {
-          if (response !== undefined) {
-            this.$q.notify({
-              color: 'green',
-              textColor: 'white',
-              position: 'bottom-left',
-              message: 'Saved successfully!'
-            })
-            this.manufacturers.push((response.data.data))
-          }
-        })
-        .catch(error => console.log(error))
+      if (this.updateMode === false) {
+        this.$axios.post(`manufacturers`, this.manufacturer, this.headers)
+          .then(response => {
+            if (response !== undefined) {
+              this.$q.notify({
+                color: 'green',
+                textColor: 'white',
+                position: 'bottom-right',
+                message: 'Saved successfully!'
+              })
+              this.manufacturers.push((response.data.data))
+            }
+          })
+          .catch(error => console.log(error))
+      } else {
+        this.$axios.put(`manufacturers/${this.manufacturer.id}`, this.manufacturer, this.headers)
+          .then(response => {
+            if (response !== undefined) {
+              this.$q.notify({
+                color: 'green',
+                textColor: 'white',
+                position: 'bottom-right',
+                message: 'Update successfull'
+              })
+              this.manufacturers.push((response.data.data))
+            }
+          })
+          .catch(error => console.log(error))
+      }
     },
     getManufacturers () {
       this.loading = true
-      this.$axios.get(`manufacturers`)
+      this.$axios.get(`manufacturers`, this.headers)
         .then(response => {
           this.manufacturers = response.data.data
           this.loading = false
@@ -188,11 +206,22 @@ export default {
           v => v.name.toLowerCase().indexOf(needle) > -1
         )
       })
+    },
+    updateManufacturer (manufacturer) {
+      this.manufacturer.id = manufacturer.id
+      this.manufacturer.name = manufacturer.name
+      this.manufacturer.short_name = manufacturer.short_name
+      this.manufacturer.website = manufacturer.website
+      this.manufacturer.country_id = manufacturer.country_id
+      this.updateMode = true
+      this.showForm = true
+      console.log(manufacturer)
     }
   },
   created () {
     this.getCountries()
     this.getManufacturers()
+    this.$store.dispatch('pageTitle', 'Manufacturers')
   },
   computed: {
     showFormIcon () {
@@ -200,6 +229,15 @@ export default {
         return 'add'
       } else {
         return 'clear'
+      }
+    },
+    headers () {
+      return {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.$store.state.token
+        }
       }
     }
   }

@@ -4,7 +4,7 @@
       <div class="col-sm-12 col-md-12 col-xs-12">
         <q-slide-transition>
           <div v-show="showForm">
-            <q-card flat bordered class="q-pt-sm">
+            <q-card flat bordered class="q-pa-sm">
               <q-card-section>
                 <q-form ref="productForm">
                   <div class="row q-col-gutter-sm  q-mb-sm">
@@ -182,11 +182,13 @@
                   <div class="row q-col-gutter-sm q-mt-xs">
                     <div class="col-sm-4 col-md-4 col-xl-12">
                       <q-btn
+                        unelevated
                         @click="saveProduct"
                         icon="save" label="Save"
                         color="primary" class="q-mt-sm">
                       </q-btn>
                       <q-btn
+                        unelevated
                         @click="clearForm"
                         label="Clear" icon="clear_all"
                         type="reset" color="grey-6"
@@ -200,55 +202,55 @@
           </div>
         </q-slide-transition>
         <q-card flat bordered>
-          <q-table
-            flat
-            :filter="filter"
-            :data="products"
-            :loading="loading"
-            :columns="tableColumns"
-            :pagination.sync="pagination"
-            row-key="id"
-          >
-            <template v-slot:top-left>
-              <span class="text-h6">Products</span>
-            </template>
-            <template v-slot:top-right>
-              <q-input dense debounce="300"
-                color="primary" v-model="filter"
-              >
-                <template v-slot:append>
-                  <q-icon name="search" />
-                </template>
-              </q-input>
-              <q-btn
-                round size="12px" color="red"
-                :icon="showFormIcon"
-                class="q-mb-none q-ml-md float-right"
-                @click="showForm = !showForm"
-              >
-              </q-btn>
-            </template>
-            <q-td slot="body-cell-status" slot-scope="props" :props="props">
-              <q-checkbox dense :value="!!props.row.status"></q-checkbox>
-            </q-td>
-            <q-td slot="body-cell-update" slot-scope="props" :props="props">
-              <q-btn-group>
+          <q-card-section class="q-pa-sm">
+            <q-table
+              flat
+              :table-header-style="{ backgroundColor: '#f0f0f0' }"
+              :filter="filter"
+              :data="products"
+              :loading="loading"
+              :columns="tableColumns"
+              :pagination.sync="pagination"
+              row-key="id"
+            >
+              <template v-slot:top-right>
+                <q-input dense debounce="300"
+                  color="primary" v-model="filter"
+                >
+                  <template v-slot:append>
+                    <q-icon name="search" />
+                  </template>
+                </q-input>
                 <q-btn
-                  dense outlined
-                  color="primary"
-                  class="q-px-sm"
-                  icon="mdi-eye-outline"
-                  :to="{name: 'product-detail', params: {id: props.value}}"
-                />
-                <q-btn
-                  dense color="secondary"
-                  icon="mdi-square-edit-outline"
-                  class="q-px-sm"
-                  @click="updateProduct(props.row)"
-                />
-              </q-btn-group>
-            </q-td>
-          </q-table>
+                  round size="12px" color="red"
+                  :icon="showFormIcon"
+                  class="q-mb-none q-ml-md float-right"
+                  @click="showForm = !showForm"
+                >
+                </q-btn>
+              </template>
+              <q-td slot="body-cell-status" slot-scope="props" :props="props">
+                <q-checkbox dense :value="!!props.row.status"></q-checkbox>
+              </q-td>
+              <q-td slot="body-cell-update" slot-scope="props" :props="props">
+                <q-btn-group>
+                  <q-btn
+                    dense outlined
+                    color="primary"
+                    class="q-px-sm"
+                    icon="mdi-eye-outline"
+                    :to="{name: 'product-detail', params: {id: props.value}}"
+                  />
+                  <q-btn
+                    dense color="secondary"
+                    icon="mdi-square-edit-outline"
+                    class="q-px-sm"
+                    @click="updateProduct(props.row)"
+                  />
+                </q-btn-group>
+              </q-td>
+            </q-table>
+          </q-card-section>
         </q-card>
       </div>
     </div>
@@ -323,7 +325,7 @@ export default {
   methods: {
     getProducts () {
       this.loading = true
-      this.$axios.get(`products`)
+      this.$axios.get(`products`, this.headers)
         .then(response => {
           if (response !== null) {
             this.products = response.data.data
@@ -340,14 +342,14 @@ export default {
         .then(result => {
           if (result === true) {
             if (this.updateMode !== true) {
-              this.$axios.post(`products`, this.product)
+              this.$axios.post(`products`, this.product, this.headers)
                 .then(response => {
                   if (response !== null) {
                     console.log(response.data.data)
                     this.products.push(response.data.data)
                     this.$q.notify({
                       message: 'Save successfull!',
-                      position: 'bottom-left',
+                      position: 'bottom-right',
                       color: 'green'
                     })
                     this.clearForm()
@@ -360,14 +362,14 @@ export default {
                   }
                 })
             } else {
-              this.$axios.put(`products/${this.product.id}`, this.product)
+              this.$axios.put(`products/${this.product.id}`, this.product, this.headers)
                 .then(response => {
                   if (response !== null) {
                     console.log(response.data.data)
                     this.getProducts()
                     this.$q.notify({
                       message: 'Update successfull!',
-                      position: 'bottom-left',
+                      position: 'bottom-right',
                       color: 'green'
                     })
                     this.clearForm()
@@ -400,10 +402,10 @@ export default {
       this.product.discount_pct = product.discount_pct
       this.product.vat_pct = product.vat_pct
       this.product.tax_pct = product.tax_pct
-      this.product.capacity_unit_id = product.capacity_unit_id
-      this.product.uom_id = product.uom_id
-      this.product.manufacturer_id = product.manufacturer.id
-      this.product.country_id = product.origin.id
+      this.product.capacity_unit_id = product.capacityUnit ? product.capacityUnit.id : null
+      this.product.uom_id = product.uom ? product.uom.id : null
+      this.product.manufacturer_id = product.manufacturer ? product.manufacturer.id : null
+      this.product.country_id = product.origin ? product.origin.id : null
       this.product.status = !!product.status
     },
     clearForm () {
@@ -423,7 +425,7 @@ export default {
       this.updateMode = false
     },
     getManufacturers () {
-      this.$axios.get(`manufacturers`)
+      this.$axios.get(`manufacturers`, this.headers)
         .then(response => {
           if (response !== null) {
             this.manufacturers = response.data.data
@@ -491,6 +493,7 @@ export default {
     this.getUoms()
     this.getManufacturers()
     this.getCountries()
+    this.$store.dispatch('pageTitle', 'Products')
   },
   computed: {
     codeErrorStatus () {
@@ -507,6 +510,15 @@ export default {
         return 'add'
       } else {
         return 'clear'
+      }
+    },
+    headers () {
+      return {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + this.$store.state.token
+        }
       }
     }
   }

@@ -6,9 +6,9 @@
 
 <script>
 export default {
-  name: 'ManufacturerDetail'
+  name: 'ManufacturerDetail',
+  created () {
+    this.$store.dispatch('pageTitle', 'Manufacturer Detail')
+  }
 }
 </script>
-
-<style>
-</style>
