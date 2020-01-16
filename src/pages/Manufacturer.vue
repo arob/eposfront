@@ -92,20 +92,13 @@
                 </q-btn>
               </template>
               <q-td slot="body-cell-update" slot-scope="props" :props="props">
-                <q-btn-group>
-                  <q-btn
-                    dense color="primary" icon="visibility"
-                    class="q-px-sm"
-                    :to="{name: 'manufacturer-detail', params: {id: props.value}}"
-                  />
-                  <q-btn
-                    dense color="secondary"
-                    icon="mdi-square-edit-outline"
-                    class="q-px-sm"
-                    @click="updateManufacturer(props.row)"
-                  >
-                  </q-btn>
-                </q-btn-group>
+                <q-btn
+                  dense color="secondary"
+                  icon="mdi-square-edit-outline"
+                  class="q-px-sm"
+                  @click="updateManufacturer(props.row)"
+                >
+                </q-btn>
               </q-td>
             </q-table>
           </q-card-section>
