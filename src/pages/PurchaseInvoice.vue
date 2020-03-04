@@ -8,7 +8,7 @@
               <q-card flat square bordered class="q-mb-md">
                 <q-card-section class="q-pa-sm">
                   <div class="row q-col-gutter-sm">
-                    <div class="col-sm-3 col-md-3 col-xs-5">
+                    <div class="col-sm-4 col-md-4 col-xs-5">
                       <q-input
                         dense no-error-icon ref="invoice_date"
                         v-model="purchase_invoice.invoice_date"
@@ -17,17 +17,7 @@
                         :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
-                    <div class="col-sm-3 col-md-3 col-xs-7">
-                      <q-input
-                        dense no-error-icon
-                        ref="invoice_number"
-                        label="Number"
-                        v-model="purchase_invoice.invoice_number"
-                        lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Required']"
-                      ></q-input>
-                    </div>
-                    <div class="col-sm-6 col-md-6 col-xs-12">
+                    <div class="col-sm-8 col-md-8 col-xs-12">
                       <q-select
                         dense no-error-icon use-input
                         required hide-dropdown-icon
@@ -46,7 +36,7 @@
                           <q-btn flat dense icon="mdi-refresh"></q-btn>
                         </template>
                         <template v-slot:after>
-                          <q-btn dense outline icon="add" color="secondary">
+                          <q-btn @click="supplierDialog = true" dense outline icon="add" color="secondary">
                             <q-tooltip
                               content-class="bg-amber text-black shadow-4"
                               transition-show="scale"
@@ -57,6 +47,33 @@
                           </q-btn>
                         </template>
                       </q-select>
+                      <q-dialog v-model="supplierDialog">
+                        <q-card>
+                          <q-card-section class="row items-center q-pb-none">
+                            <div class="text-h6">New Supplier</div>
+                            <q-space />
+                          </q-card-section>
+                          <q-card-section>
+                            <div class="row q-col-gutter-sm">
+                              <div class="col-sm-8">
+                                <q-input required label="Name" dense no-error-icon use-input></q-input>
+                              </div>
+                              <div class="col-sm-4">
+                                <q-input
+                                  label="Contact Person"
+                                  dense no-error-icon use-input
+                                ></q-input>
+                              </div>
+                            </div>
+                              <q-btn
+                                dense label="save"
+                                icon="save" color="primary"
+                                class="q-mt-lg"
+                              >
+                              </q-btn>
+                          </q-card-section>
+                        </q-card>
+                      </q-dialog>
                     </div>
                   </div>
                   <div class="row q-col-gutter-sm">
@@ -267,6 +284,7 @@ import { date } from 'quasar'
 export default {
   name: 'PurchaseInvoice',
   data: () => ({
+    supplierDialog: false,
     filter: '',
     loading: false,
     purchase_invoice: {

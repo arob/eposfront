@@ -16,9 +16,9 @@ export default function (/* { ssrContext } */) {
     //   example
     // },
     state: {
-      isLoggedIn: false,
-      token: '',
-      user: {},
+      isLoggedIn: localStorage.getItem('token') !== null,
+      token: localStorage.getItem('token'),
+      user: JSON.parse(localStorage.getItem('user')),
       pageTitle: ''
     },
     getters: {
@@ -32,19 +32,18 @@ export default function (/* { ssrContext } */) {
         state.isLoggedIn = true
         state.token = payload
         localStorage.setItem('token', payload)
-      },
-      token (state, payload) {
-        state.token = payload
+        // console.log(state.user)
       },
       logout (state) {
         state.isLoggedIn = false
         state.token = null
         state.user = null
         localStorage.removeItem('token')
-        // console.log('logout successful.')
+        localStorage.removeItem('user')
       },
       user (state, payload) {
         state.user = payload
+        // localStorage.setItem('user', payload)
       },
       pageTitle (state, payload) {
         state.pageTitle = payload

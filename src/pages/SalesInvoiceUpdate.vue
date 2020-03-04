@@ -190,14 +190,6 @@
                 </q-field>
               </div>
             </div>
-          <!-- <div class="row q-col-gutter-sm q-mb-sm">
-            <div class="col-sm-2 col-md-2 col-xs-4 text-right">
-            </div>
-            <div class="col-sm-2 col-md-2 col-xs-4">
-            </div>
-            <div class="col-sm-2 col-md-2 col-xs-4">
-            </div>
-          </div> -->
           <div class="row q-col-gutter-sm">
             <div class="col-sm-12 col-md-12 col-xs-12">
               <q-table
@@ -319,7 +311,7 @@
                 <div class="col-sm-6 col-md-6 col-xs-12">
                   <q-btn
                     dense label="invoice list" color="primary"
-                    class="full-width print-hide" icon="list"
+                    class="full-width print-hide"
                     :to="{path: '/sales-invoice-list'}"
                     >
                   </q-btn>

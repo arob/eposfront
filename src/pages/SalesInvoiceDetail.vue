@@ -215,7 +215,7 @@ export default {
       {
         name: 'sales_rate',
         align: 'right',
-        label: 'Rate',
+        label: 'Sales Rate',
         field: 'sales_rate'
       },
       {

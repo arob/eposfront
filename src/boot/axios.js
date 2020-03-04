@@ -29,7 +29,14 @@ export default async ({
         message: 'Invalid Credentials!',
         closeBtn: 'close'
       })
-    } else {
+    } else if (error.response.status === 500) {
+      Notify.create({
+        color: 'red',
+        textColor: 'white',
+        position: 'bottom-right',
+        message: 'Error saving record!',
+        closeBtn: 'close'
+      })
       return Promise.reject(error)
     }
   })

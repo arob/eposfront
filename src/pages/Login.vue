@@ -90,6 +90,8 @@ export default {
             }).then(response => {
               // console.log(response.data.message)
               this.$store.dispatch('user', response.data.message)
+              localStorage.setItem('user', JSON.stringify(response.data.message))
+              console.log(response.data.message)
             })
           } else {
             // console.log(response)

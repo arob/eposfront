@@ -64,7 +64,7 @@ export default {
         .then(response => {
           if (response !== null) {
             this.company = response.data.data[0]
-            console.log(response.data.data[0])
+            // console.log(response.data.data[0])
           }
         },
         error => console.log(error)

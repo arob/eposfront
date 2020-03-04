@@ -21,29 +21,22 @@
                       @input="setPaidAmount"
                     ></q-select>
                   </div>
-                   <div class="col-sm-4 col-md-4 col-xs-6">
+                   <div class="col-sm-3 col-md-3 col-xs-6">
                     <q-input
                       dense
                       label="Invoice Date"
                       v-model="sales_invoice.invoice_date"
                     ></q-input>
                   </div>
-                  <div class="col-sm-5 col-md-5 col-xs-6">
-                    <q-input
-                      dense
-                      label="Invoice Number"
-                      v-model="sales_invoice.invoice_number"
-                    ></q-input>
-                  </div>
-                </div>
-                <div class="row q-col-gutter-md q-mt-sm">
-                  <div class="col-sm-7 col-md-7 col-xs-12">
+                  <div class="col-sm-6 col-md-6 col-xs-12">
                     <q-select
+                      required
                       dense use-input no-error-icon
                       hide-dropdown-icon
                       transition-show="scale"
                       transition-hide="scale"
                       label="Customer"
+                      ref="selectCustomer"
                       v-model="sales_invoice.customer_id"
                       :options="customerOptions"
                       @filter="filterCustomers"
@@ -52,7 +45,9 @@
                       map-options emit-value
                     ></q-select>
                   </div>
-                  <div class="col-sm-5 col-md-5 col-xs-12">
+                </div>
+                <div class="row q-col-gutter-md q-mt-sm">
+                  <div class="col-xs-12">
                     <q-input
                       dense no-error-icon
                       label="Notes"
@@ -77,8 +72,6 @@
             </q-card>
           </div>
         </div>
-        <!-- <q-card flat bordered class="q-mt-sm"> -->
-          <!-- <q-card-section class="q-pa-sm"> -->
             <div class="row q-col-gutter-xs q-mt-md">
               <div class="col-sm-3 col-md-3 col-xs-12">
                 <q-select
@@ -95,7 +88,7 @@
                     option-value="id"
                     map-options
                     @filter="filterProducts"
-                    @input="productSelected"
+                    @input="selectedProduct"
                   >
                     <template v-slot:option="scope">
                       <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
@@ -138,7 +131,7 @@
 
               <div class="col-sm-1 col-md-1 col-xs-4">
                 <q-input
-                  dense filled readonly square
+                  dense filled square
                   no-error-icon stack-label
                   label="VAT"
                   ref="vatAmount"
@@ -147,7 +140,7 @@
               </div>
               <div class="col-sm-1 col-md-1 col-xs-4">
                 <q-input
-                  dense filled readonly square
+                  dense filled square
                   no-error-icon stack-label
                   label="Tax"
                   ref="taxAmount"
@@ -169,7 +162,7 @@
                   label="Discount"
                   type="number"
                   min="0"
-                  v-model="discount_amount"
+                  v-model.number="discount_amount"
                   @keypress.enter="addItem"
                 ></q-input>
               </div>
@@ -340,10 +333,6 @@
                         color="secondary"
                         @submit.prevent="addInstallment"
                       ></q-btn>
-                      <!-- <q-input
-                        type="submit"
-                        icon="add"
-                      ></q-input> -->
                     </div>
                   <div class="col-sm-2 col-md-2 col-xs-12">
                     <div class="text-grey-7 text-right">Remains: <br>
@@ -417,7 +406,7 @@
                   <q-btn
                     square dense
                     v-show="sales_invoice.items.length > 0"
-                    label="save & preview" icon="save" color="primary"
+                    label="save & preview" color="primary"
                     class="full-width print-hide q-mt-md"
                     @click="savenPreview"
                   >
@@ -446,7 +435,8 @@ export default {
     ],
     sales_invoice: {
       sales_type: 0,
-      invoice_number: date.formatDate(Date.now(), 'YYYYMMDD-HHmmss-SSS'),
+      invoice_number: date.formatDate(Date.now(), 'YYYY.MM.'),
+      // invoice_number: this.invoiceNumber(),
       invoice_date: date.formatDate(Date.now(), 'YYYY-MM-DD HH:mm:ss'),
       customer_id: '',
       invoice_total: '',
@@ -490,7 +480,7 @@ export default {
       {
         name: 'price',
         field: 'product_rate',
-        label: 'Price',
+        label: 'Sales Rate',
         align: 'right'
       },
       {
@@ -558,6 +548,7 @@ export default {
     }
   }),
   methods: {
+
     getCustomers () {
       this.$axios.get(`customers`, this.headers)
         .then(response => {
@@ -610,7 +601,7 @@ export default {
         )
       })
     },
-    productSelected () {
+    selectedProduct () {
       this.product_rate = this.selected.sales_rate
       this.product_qty = 1
       this.product_serial = this.product_serial
@@ -647,6 +638,16 @@ export default {
           this.sales_invoice.paid_amount = this.grandTotal
         }
 
+        if (this.sales_invoice.customer_id === null || this.sales_invoice.customer_id === '') {
+          this.$q.notify({
+            message: 'Please select a customer',
+            color: 'red',
+            position: 'bottom-right',
+            closeBtn: 'close'
+          })
+          this.$refs.selectCustomer.focus()
+        }
+
         this.selected = null
         this.product_rate = ''
         this.discount_amount = ''
@@ -655,7 +656,6 @@ export default {
         if (this.$q.platform.is.desktop) {
           this.$refs.selectProduct.focus()
         }
-
         // console.log('item added')
       } else {
         this.$q.notify({
@@ -704,7 +704,7 @@ export default {
           // console.log(response.data.data.id)
           this.$router.push(`/print/sales-invoices/${response.data.data.id}`)
         })
-        .catch(error => console.log(error))
+        // .catch(error => console.log(error))
     },
     setPaidAmount () {
       if (this.sales_invoice.sales_type === 0) {
@@ -734,10 +734,10 @@ export default {
   },
   computed: {
     subtotal () {
-      return (this.product_rate -
-        this.discount_amount +
-        this.vat_amount +
-        this.tax_amount) * this.product_qty
+      return (Number(this.sales_rate) + this.vat_amount + this.tax_amount) * this.product_qty - this.discount_amount
+    },
+    invoiceNumber () {
+      return this.sales_invoice.id
     },
     grandTotal () {
       if (this.sales_invoice.items.length > 0) {

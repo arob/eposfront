@@ -297,7 +297,7 @@ export default {
       {
         name: 'price',
         align: 'right',
-        label: 'Rate',
+        label: 'Sales Rate',
         field: 'sales_rate',
         sortable: true
       },
@@ -345,7 +345,7 @@ export default {
               this.$axios.post(`products`, this.product, this.headers)
                 .then(response => {
                   if (response !== null) {
-                    console.log(response.data.data)
+                    // console.log(response.data.data)
                     this.products.push(response.data.data)
                     this.$q.notify({
                       message: 'Save successfull!',

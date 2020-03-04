@@ -59,7 +59,9 @@ module.exports = function (ctx) {
         'QSelect',
         'QToggle',
         'QDate',
-        'QPopupProxy'
+        'QPopupProxy',
+        'QDialog'
+
       ],
 
       directives: [

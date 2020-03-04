@@ -76,14 +76,14 @@
 
                 ></q-select>
                 <q-btn
-                  class="q-mt-lg"
+                  class="q-mt-sm q-mr-xs"
                   :label="saveButtonLabel"
                   icon="save"
                   color="secondary"
                   @click="register"
                 ></q-btn>
                 <q-btn
-                  class="q-mt-lg q-ml-sm"
+                  class="q-mt-sm"
                   :label="cancelButtonLabel"
                   icon="clear_all"
                   color="orange"

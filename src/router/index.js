@@ -30,7 +30,7 @@ export default function ({ store }) {
           color: 'orange',
           textColor: 'black',
           position: 'bottom-right',
-          message: 'Must be logged in!',
+          message: 'Please Login!',
           closeBtn: 'close'
         })
         next({

@@ -99,7 +99,7 @@
                         <span class="text-caption">Manufacturer</span>
                       </template>
                       <template v-slot:control>
-                        {{product.manufacturer}}
+                        {{product.manufacturer ? product.manufacturer.name : null}}
                       </template>
                     </q-field>
                   </div>
@@ -109,7 +109,7 @@
                         <span class="text-caption">Origin</span>
                       </template>
                       <template v-slot:control>
-                        {{product.origin}}
+                        {{product.origin ? product.origin.name : null}}
                       </template>
                     </q-field>
                   </div>

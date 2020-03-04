@@ -17,7 +17,6 @@ import PurchaseInvoiceDetail from 'pages/PurchaseInvoiceDetail'
 import PurchaseInvoiceList from 'pages/PurchaseInvoiceList'
 import PurchaseInvoiceUpdate from 'pages/PurchaseInvoiceUpdate'
 import Manufacturer from 'pages/Manufacturer'
-import ManufacturerDetail from 'pages/ManufacturerDetail'
 import Supplier from 'pages/Supplier'
 import SupplierDetail from 'pages/SupplierDetail'
 import TagsUom from 'pages/TagsUom'
@@ -161,14 +160,6 @@ let routes = [
         name: 'manufacturer',
         path: '/manufacturers',
         component: Manufacturer,
-        meta: {
-          requiresAuth: true
-        }
-      },
-      {
-        name: 'manufacturer-detail',
-        path: '/manufacturers/:id',
-        component: ManufacturerDetail,
         meta: {
           requiresAuth: true
         }
