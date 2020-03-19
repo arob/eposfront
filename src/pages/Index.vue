@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <q-card flat square>
+    <q-card flat square class="full-height">
       <q-card-section>
         <div class="row q-col-gutter-sm">
           <div class="col-sm-6 col-md-6 col-xs-12">

@@ -130,6 +130,7 @@
                   <div class='row q-col-gutter-sm q-pl-sm q-mt-xs'>
                     <q-btn
                       @click='saveCustomer'
+                      size="12px"
                       label='Save'
                       icon='save'
                       color='primary'
@@ -160,7 +161,7 @@
         <q-card flat square bordered>
           <q-card-section class='q-pa-sm'>
             <q-table
-              flat
+              flat dense
               wrap-cells
               :filter='filter'
               :table-header-style="{ backgroundColor: '#f0f0f0'}"
@@ -170,6 +171,16 @@
               :pagination.sync='pagination'
               row-key='id'
             >
+              <template v-slot:top-left>
+                <q-btn
+                  size="12px" color="primary" outline
+                  label="Reload"
+                  icon="mdi-refresh"
+                  class="q-mb-none"
+                  @click="getCustomers"
+                >
+                </q-btn>
+              </template>
               <template v-slot:top-right class='float-right'>
                 <q-input
                   dense
@@ -191,37 +202,40 @@
                 >
                 </q-btn>
               </template>
+              <q-td slot="body-cell-status" slot-scope="props" :props="props">
+                <q-checkbox dense :value="!!props.row.status"></q-checkbox>
+              </q-td>
               <q-td slot='body-cell-update' slot-scope='props' :props='props'>
                 <q-btn-group>
                   <q-btn
                     dense
                     color='primary'
                     icon='visibility'
-                    class='q-px-sm'
+                    class='q-pa-none'
                     :to="{name: 'customer-detail', params: {id: props.value}
                     }"
                   >
                     <q-tooltip
-                      content-class='bg-amber text-black shadow-4'
+                      content-class='bg-yellow text-black shadow-3'
                       transition-show='scale'
                       transition-hide='scale'
                     >
-                      View details
+                      View customer details
                     </q-tooltip>
                   </q-btn>
                   <q-btn
                     dense
                     color='secondary'
                     icon='mdi-square-edit-outline'
-                    class='q-px-sm'
+                    class='q-pa-none'
                     @click='updateCustomer(props.row)'
                   >
                     <q-tooltip
-                      content-class='bg-amber text-black shadow-4'
+                      content-class='bg-yellow text-black shadow-3'
                       transition-show='scale'
                       transition-hide='scale'
                     >
-                      Update record
+                      Update customer record
                     </q-tooltip>
                   </q-btn>
                 </q-btn-group>
@@ -278,6 +292,7 @@ export default {
         field: 'address',
         sortable: true
       },
+      { name: 'status', align: 'center', label: 'Status', field: 'status', sortable: true },
       { name: 'update', align: 'right', label: 'Update', field: 'id' }
     ],
     pagination: {
@@ -308,7 +323,7 @@ export default {
         this.$axios
           .post(`customers`, this.customer, this.headers)
           .then(response => {
-            if (response !== null) {
+            if (response.data.data !== null) {
               this.customers.push(response.data.data)
               this.$q.notify({
                 color: 'green',
@@ -320,7 +335,7 @@ export default {
               this.$q.notify({
                 color: 'red',
                 position: 'bottom-right',
-                message: 'Something went wrong'
+                message: 'Error saving data!'
               })
             }
           })

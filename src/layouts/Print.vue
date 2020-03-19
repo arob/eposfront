@@ -1,26 +1,25 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHh Lpr lFf" id="print-container">
     <div class="row q-col-gutter-sm">
       <div class="col-sm-12 col-md-12 col-xs-12">
-        <q-card flat square id="print">
+        <q-card flat square>
           <q-card-section>
-            <span class="text-h6">{{company.name}}</span> <br />
-            <span class="text-caption">{{company.address}}</span><br />
-            <span class="text-caption">Contact: {{company.contact_number}}</span><br />
+            <span class="text-h6 text-center">{{company.name}}</span><br/>
+            <span class="text-caption">{{company.address}}</span><br/>
+            <span class="text-caption">Contact: {{company.contact_number}}</span><br/>
+            <hr>
           </q-card-section>
         </q-card>
       </div>
     </div>
-    <q-page-container>
       <router-view />
-    </q-page-container>
   </q-layout>
 </template>
 
 <script>
 
 export default {
-  name: 'Main',
+  name: 'Print',
   data () {
     return {
       company: {}
@@ -54,12 +53,12 @@ export default {
 </script>
 
 <style>
-html {
-  overflow-y: scroll;
-}
-
-#print {
-  margin: 0 auto;
-  width: 800px;
-}
+  @media screen {
+    body, html {
+      background-color: #efefef;
+    }
+  }
+  #print-container {
+    background-color: #fff;
+  }
 </style>

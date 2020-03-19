@@ -33,12 +33,24 @@
                         @filter="filterSuppliers"
                       >
                         <template v-slot:append>
-                          <q-btn flat dense icon="mdi-refresh"></q-btn>
+                          <q-btn flat dense icon="mdi-refresh" @click="reloadSuppliers">
+                            <q-tooltip
+                              content-class="bg-yellow text-black shadow-4"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              Reload all suppliers.
+                            </q-tooltip>
+                          </q-btn>
                         </template>
                         <template v-slot:after>
-                          <q-btn @click="supplierDialog = true" dense outline icon="add" color="secondary">
+                          <q-btn
+                            @click="supplierAdd"
+                            dense outline icon="add"
+                            color="secondary"
+                          >
                             <q-tooltip
-                              content-class="bg-amber text-black shadow-4"
+                              content-class="bg-yellow text-black shadow-4"
                               transition-show="scale"
                               transition-hide="scale"
                             >
@@ -47,7 +59,7 @@
                           </q-btn>
                         </template>
                       </q-select>
-                      <q-dialog v-model="supplierDialog">
+                      <!-- <q-dialog v-model="supplierDialog">
                         <q-card>
                           <q-card-section class="row items-center q-pb-none">
                             <div class="text-h6">New Supplier</div>
@@ -73,7 +85,7 @@
                               </q-btn>
                           </q-card-section>
                         </q-card>
-                      </q-dialog>
+                      </q-dialog> -->
                     </div>
                   </div>
                   <div class="row q-col-gutter-sm">
@@ -411,6 +423,12 @@ export default {
       this.purchase_invoice.items.splice(index, 1)
       this.purchase_invoice.invoice_total = this.grandTotal
       this.purchase_invoice.paid_amount = this.grandTotal
+    },
+    supplierAdd () {
+      window.open(`suppliers`, '_blank')
+    },
+    reloadSuppliers () {
+      this.getSuppliers()
     },
     saveInvoice () {
       console.log(this.purchase_invoice)

@@ -43,7 +43,42 @@
                       option-value="id"
                       :option-label="customer => customer ? customer.name + ' (' + customer.contact_number +')' : ''"
                       map-options emit-value
-                    ></q-select>
+                    >
+                      <template v-slot:option="scope">
+                        <q-item v-bind="scope.itemProps" v-on="scope.itemEvents">
+                          <q-item-section>
+                            <q-item-label class="text-primary text-bold text-subtitle1">
+                              {{scope.opt.name}}
+                            </q-item-label>
+                            <q-item-label caption class="text-subtitle2">
+                              ({{scope.opt.contact_number}})
+                            </q-item-label>
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                      <template v-slot:append>
+                          <q-btn flat dense icon="mdi-refresh" @click="reloadCustomers">
+                            <q-tooltip
+                              content-class="bg-yellow text-black shadow-4"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              Reload all customers.
+                            </q-tooltip>
+                          </q-btn>
+                        </template>
+                        <template v-slot:after>
+                          <q-btn dense icon="add" color="secondary" @click="addCustomer">
+                            <q-tooltip
+                              content-class="bg-yellow text-black shadow-4"
+                              transition-show="scale"
+                              transition-hide="scale"
+                            >
+                              Add a new customer
+                            </q-tooltip>
+                          </q-btn>
+                        </template>
+                    </q-select>
                   </div>
                 </div>
                 <div class="row q-col-gutter-md q-mt-sm">
@@ -186,7 +221,7 @@
                   </template>
                   <template v-slot:after>
                     <q-btn
-                      dense outline color="secondary"
+                      dense color="secondary"
                       class="full-width" icon="add"
                       @click="addItem"
                     ></q-btn>
@@ -705,6 +740,12 @@ export default {
           this.$router.push(`/print/sales-invoices/${response.data.data.id}`)
         })
         // .catch(error => console.log(error))
+    },
+    addCustomer () {
+      window.open(`customers`, '_blank')
+    },
+    reloadCustomers () {
+      this.getCustomers()
     },
     setPaidAmount () {
       if (this.sales_invoice.sales_type === 0) {

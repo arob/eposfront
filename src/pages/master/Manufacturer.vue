@@ -68,7 +68,7 @@
         <q-card flat bordered>
           <q-card-section class="q-pa-sm">
             <q-table
-              flat
+              flat dense
               :table-header-style="{ backgroundColor: '#f0f0f0' }"
               :filter="filter"
               :data="manufacturers"
@@ -77,6 +77,16 @@
               :pagination.sync="pagination"
               row-key="id"
             >
+              <template v-slot:top-left>
+                <q-btn
+                  size="12px" color="primary" outline
+                  label="Reload"
+                  icon="mdi-refresh"
+                  class="q-mb-none"
+                  @click="getManufacturers"
+                >
+                </q-btn>
+              </template>
               <template v-slot:top-right>
                 <q-input dense debounce="300" color="primary" v-model="filter">
                   <template v-slot:append>
@@ -91,13 +101,23 @@
                 >
                 </q-btn>
               </template>
+              <q-td slot="body-cell-status" slot-scope="props" :props="props">
+                <q-checkbox dense :value="!!props.row.status"></q-checkbox>
+              </q-td>
               <q-td slot="body-cell-update" slot-scope="props" :props="props">
                 <q-btn
                   dense color="secondary"
                   icon="mdi-square-edit-outline"
-                  class="q-px-sm"
+                  class="q-pa-none"
                   @click="updateManufacturer(props.row)"
                 >
+                  <q-tooltip
+                    content-class='bg-yellow text-black shadow-3'
+                    transition-show='scale'
+                    transition-hide='scale'
+                  >
+                    Update manufacturer record.
+                  </q-tooltip>
                 </q-btn>
               </q-td>
             </q-table>
@@ -130,6 +150,7 @@ export default {
       { name: 'short_name', align: 'left', label: 'Short', field: 'short_name', sortable: true },
       { name: 'website', align: 'left', label: 'Website', field: 'website', sortable: true },
       { name: 'country', align: 'left', label: 'Country', field: 'country', sortable: true },
+      { name: 'status', align: 'center', label: 'Status', field: 'status', sortable: true },
       { name: 'update', align: 'right', field: 'id' }
     ],
     pagination: {
@@ -208,7 +229,7 @@ export default {
       this.manufacturer.country_id = manufacturer.country_id
       this.updateMode = true
       this.showForm = true
-      console.log(manufacturer)
+      // console.log(manufacturer)
     }
   },
   created () {

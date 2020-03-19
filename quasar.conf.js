@@ -53,6 +53,7 @@ module.exports = function (ctx) {
         'QInput',
         'QField',
         'QTable',
+        'QMarkupTable',
         'QTh',
         'QTr',
         'QTd',

@@ -6,7 +6,7 @@
           <div class="col-sm-12 col-md-12 col-xs-12">
             <q-card square flat bordered>
               <q-table
-                flat square wrap-cells
+                flat square wrap-cells dense
                 :table-header-style="{ backgroundColor: '#f0f0f0' }"
                 :loading="loading"
                 :data="invoices"
@@ -15,6 +15,16 @@
                 row-key="id"
                 :pagination.sync="pagination"
               >
+                <template v-slot:top-left>
+                  <q-btn
+                    size="12px" color="primary" outline
+                    label="Reload"
+                    icon="mdi-refresh"
+                    class="q-mb-none"
+                    @click="getInvoices"
+                    >
+                  </q-btn>
+                </template>
                 <template v-slot:top-right>
                   <q-input dense debounce="300" color="primary" v-model="filter">
                     <template v-slot:append>
@@ -33,15 +43,30 @@
                   <q-btn-group>
                     <q-btn
                       dense color="primary" icon="visibility"
-                      class="q-px-sm"
+                      class="q-pa-none"
                       :to="{name: 'sales-invoice-detail', params: {id: props.value}}"
-                    />
+                    >
+                      <q-tooltip
+                        content-class='bg-yellow text-black shadow-3'
+                        transition-show='scale'
+                        transition-hide='scale'
+                      >
+                        View invoice details.
+                      </q-tooltip>
+                    </q-btn>
                     <q-btn
                       dense color="secondary"
                       icon="mdi-square-edit-outline"
-                      class="q-px-sm"
+                      class="q-pa-none"
                       :to="{name: 'sales-invoice-update', params: {id: props.value}}"
                     >
+                      <q-tooltip
+                        content-class='bg-yellow text-black shadow-3'
+                        transition-show='scale'
+                        transition-hide='scale'
+                      >
+                        Update invoice record
+                      </q-tooltip>
                     </q-btn>
                   </q-btn-group>
                 </q-td>

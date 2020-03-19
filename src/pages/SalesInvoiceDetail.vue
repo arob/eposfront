@@ -1,5 +1,5 @@
 <template>
-  <q-page id="printMe">
+  <q-page>
       <q-card flat bordered>
         <q-card-section class="q-pa-sm">
           <div class="row q-col-gutter-sm">
@@ -169,7 +169,7 @@
                       </div>
                       <div class="col-sm-6 col-md-6 col-xs-12">
                         <q-btn
-                          dense label="invoice list" color="primary"
+                          dense label="invoice list" color="secondary"
                           class="full-width print-hide" icon="list"
                           :to="{path: '/sales-invoice-list'}"
                           >

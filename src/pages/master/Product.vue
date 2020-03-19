@@ -10,18 +10,15 @@
                   <div class="row q-col-gutter-sm  q-mb-sm">
                     <div class="col-sm-3 col-md-3 col-xs-12">
                       <q-input
-                        ref="code" dense no-error-icon
+                        ref="code" dense no-error-icon readonly
                         v-model="product.code"
-                        label="Code *"
+                        label="Code (Auto)"
                         lazy-rules
-                        :error="codeErrorStatus"
-                        :error-message="product.codeError"
-                        :rules="[ val => val && val.length > 0 || 'Required']"
                       ></q-input>
                     </div>
                     <div class="col-sm-5 col-md-5 col-xs-12">
                       <q-input
-                        dense no-error-icon
+                        dense no-error-icon autofocus
                         v-model="product.name"
                         label="Name *"
                         lazy-rules
@@ -118,23 +115,12 @@
                         lazy-rules
                       ></q-input>
                     </div>
-                    <div class="col-sm-2 col-md-2 col-xs-6">
+                    <div class="col-sm-4 col-md-4 col-xs-6">
                       <q-select
                         dense no-error-icon
                         :options="capacityUnits"
                         label="Capacity Unit"
                         v-model="product.capacity_unit_id"
-                        option-value="id"
-                        option-label="name"
-                        emit-value map-options
-                      />
-                    </div>
-                    <div class="col-sm-2 col-md-2 col-xs-12">
-                      <q-select
-                        dense no-error-icon
-                        :options="uoms"
-                        label="Measuring Unit"
-                        v-model="product.uom_id"
                         option-value="id"
                         option-label="name"
                         emit-value map-options
@@ -204,7 +190,7 @@
         <q-card flat bordered>
           <q-card-section class="q-pa-sm">
             <q-table
-              flat
+              flat dense
               :table-header-style="{ backgroundColor: '#f0f0f0' }"
               :filter="filter"
               :data="products"
@@ -213,6 +199,16 @@
               :pagination.sync="pagination"
               row-key="id"
             >
+              <template v-slot:top-left>
+                <q-btn
+                  size="12px" color="primary" outline
+                  label="Reload"
+                  icon="mdi-refresh"
+                  class="q-mb-none"
+                  @click="getProducts"
+                >
+                </q-btn>
+              </template>
               <template v-slot:top-right>
                 <q-input dense debounce="300"
                   color="primary" v-model="filter"
@@ -237,16 +233,32 @@
                   <q-btn
                     dense outlined
                     color="primary"
-                    class="q-px-sm"
+                    class="q-pa-none"
                     icon="mdi-eye-outline"
                     :to="{name: 'product-detail', params: {id: props.value}}"
-                  />
+                  >
+                    <q-tooltip
+                        content-class='bg-yellow text-black shadow-3'
+                        transition-show='scale'
+                        transition-hide='scale'
+                      >
+                        Product record details
+                    </q-tooltip>
+                  </q-btn>
                   <q-btn
                     dense color="secondary"
                     icon="mdi-square-edit-outline"
-                    class="q-px-sm"
+                    class="q-pa-none"
                     @click="updateProduct(props.row)"
-                  />
+                  >
+                    <q-tooltip
+                        content-class='bg-yellow text-black shadow-3'
+                        transition-show='scale'
+                        transition-hide='scale'
+                      >
+                        Update product record
+                    </q-tooltip>
+                  </q-btn>
                 </q-btn-group>
               </q-td>
             </q-table>
@@ -269,7 +281,6 @@ export default {
     product: {
       id: '',
       code: '',
-      codeError: '',
       name: '',
       nameError: '',
       model: '',
@@ -301,14 +312,14 @@ export default {
         field: 'sales_rate',
         sortable: true
       },
-      {
-        name: 'stock',
-        align: 'right',
-        label: 'Stok Quantity',
-        field: 'stock_qty',
-        format: (val, row) => Number(val).toFixed(0),
-        sortable: true
-      },
+      // {
+      //   name: 'stock',
+      //   align: 'right',
+      //   label: 'Stok Quantity',
+      //   field: 'stock_qty',
+      //   format: (val, row) => Number(val).toFixed(0),
+      //   sortable: true
+      // },
       { name: 'status', align: 'center', label: 'Status', field: 'status', sortable: true },
       { name: 'update', align: 'right', label: 'Update', field: 'id' }
     ],
@@ -358,7 +369,7 @@ export default {
                 .catch(error => {
                   if (error.response) {
                     console.log(error.response.data.errors['code'][0])
-                    this.product.codeError = error.response.data.errors['code'][0]
+                    // this.product.codeError = error.response.data.errors['code'][0]
                   }
                 })
             } else {
@@ -378,7 +389,7 @@ export default {
                 .catch(error => {
                   if (error.response) {
                     console.log(error.response.data.errors['code'][0])
-                    this.product.codeError = error.response.data.errors['code'][0]
+                    // this.product.codeError = error.response.data.errors['code'][0]
                   }
                 })
             }
@@ -496,9 +507,6 @@ export default {
     this.$store.dispatch('pageTitle', 'Products')
   },
   computed: {
-    codeErrorStatus () {
-      return this.product.codeError !== ''
-    },
     nameErrorStatus () {
       return this.product.nameError !== ''
     },

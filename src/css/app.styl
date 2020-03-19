@@ -1,1 +1,22 @@
-// app global css
+table tr:hover {
+    background-color: lightyellow;
+}
+
+@media only screen and (min-width: 1024px)  {
+    #print-container {
+        width: 80%;
+        margin: 10px auto;
+        border: 1px solid #ddd;
+        box-shadow: 1px 1px 5px 0px #ddd
+    }
+}
+
+@media print {
+    button, a {
+        display: none !important;
+    }
+    table {
+        border: none;
+        font-size: 12px;
+    }
+}

@@ -6,7 +6,7 @@
           <div class="col-sm-9 col-md-9 col-xs-12">
             <q-card flat square bordered class="full-height">
               <q-table
-                flat
+                flat dense
                 :table-header-style="{ backgroundColor: '#f0f0f0' }"
                 :filter="filter"
                 :data="users"
@@ -19,9 +19,16 @@
                   <q-btn
                     dense color="primary"
                     icon="mdi-square-edit-outline"
-                    class="q-px-sm"
+                    class="q-pa-none"
                     @click="updateUser(props.row)"
                   >
+                  <q-tooltip
+                      content-class='bg-yellow text-black shadow-3'
+                      transition-show='scale'
+                      transition-hide='scale'
+                      >
+                        Update user.
+                    </q-tooltip>
                   </q-btn>
               </q-td>
               </q-table>
@@ -136,7 +143,7 @@ export default {
       this.$axios.get(`users`, this.headers)
         .then(response => {
           this.users = response.data.data
-          console.log(response.data.data)
+          // console.log(response.data.data)
         })
         .catch(error => console.log(error))
     },
@@ -185,7 +192,7 @@ export default {
               this.getUsers()
             } else {
               this.$q.notify({
-                color: 'green',
+                color: 'yellow',
                 textColor: 'white',
                 position: 'bottom-right',
                 message: 'Error updating record'
@@ -201,7 +208,7 @@ export default {
     },
     updateUser (user) {
       this.updateMode = true
-      console.log(user)
+      // console.log(user)
       this.user.id = user.id
       this.user.name = user.name
       this.user.username = user.username

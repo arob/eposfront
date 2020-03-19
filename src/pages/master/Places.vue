@@ -36,7 +36,7 @@
               <q-card flat bordered square>
                 <q-card-section class="q-pa-sm">
                   <q-table
-                    flat
+                    flat dense
                     :table-header-style="{ backgroundColor: '#f0f0f0' }"
                     :data="countries"
                     :columns="countryColumns"
@@ -52,8 +52,15 @@
                       size="12px"
                       color="primary"
                     >
-                    </q-btn>
-                  </q-td>
+                      <q-tooltip
+                        content-class='bg-yellow text-black shadow-3'
+                        transition-show='scale'
+                        transition-hide='scale'
+                        >
+                          Update country.
+                        </q-tooltip>
+                      </q-btn>
+                    </q-td>
                   </q-table>
                 </q-card-section>
               </q-card>
@@ -82,7 +89,7 @@
             <q-card flat bordered square>
               <q-card-section class="q-pa-sm">
                 <q-table
-                  flat
+                  flat dense
                   :table-header-style="{ backgroundColor: '#f0f0f0' }"
                   :data="districts"
                   :loading="districtLoading"
@@ -96,7 +103,15 @@
                       icon="mdi-square-edit-outline"
                       round
                       size="12px"
-                      color="primary">
+                      color="primary"
+                    >
+                      <q-tooltip
+                        content-class='bg-yellow text-black shadow-3'
+                        transition-show='scale'
+                        transition-hide='scale'
+                        >
+                          Update district.
+                      </q-tooltip>
                     </q-btn>
                   </q-td>
                 </q-table>
@@ -112,7 +127,7 @@
                   dense
                   no-error-icon
                   v-model="thana.name"
-                  label="Upazilla"
+                  label="Upazila"
                   lazy-rules
                   :rules="[ val => val && val.length > 0 || 'Required']"
                 >
@@ -127,7 +142,7 @@
             <q-card flat square bordered>
               <q-card-section class="q-pa-sm">
                 <q-table
-                  flat
+                  flat dense
                   :table-header-style="{ backgroundColor: '#f0f0f0' }"
                   :data="thanas"
                   :loading="thanaLoading"
@@ -141,7 +156,15 @@
                       icon="mdi-square-edit-outline"
                       round
                       size="12px"
-                      color="primary">
+                      color="primary"
+                    >
+                      <q-tooltip
+                        content-class='bg-yellow text-black shadow-3'
+                        transition-show='scale'
+                        transition-hide='scale'
+                      >
+                        Update upazila.
+                      </q-tooltip>
                     </q-btn>
                   </q-td>
                 </q-table>
@@ -228,19 +251,19 @@ export default {
         })
     },
     updateCountry (country) {
+      this.countryUpdate = true
       this.country.id = country.id
       this.country.name = country.name
       this.country.short_name = country.short_name
       this.country.short_name = country.short_name
       this.country.status = country.status
-      this.countryUpdate = true
       this.$refs.countryForm.reset()
     },
     addDistrict () {
       this.$axios.post('districts', this.district)
         .then((response) => {
           this.districts.push(response.data.data)
-          console.log('district added')
+          // console.log('district added')
         })
     },
     getDistricts () {
@@ -253,13 +276,14 @@ export default {
         })
     },
     updateDistrict (district) {
+      this.districtUpdate = true
       this.district.id = district.id
       this.district.name = district.name
       this.district.short_name = district.short_name
       this.district.short_name = district.short_name
       this.district.status = district.status
-      this.districtUpdate = true
       this.$refs.districtForm.reset()
+      this.getDistricts()
     },
     addThana () {
       this.$axios.post('thanas', this.thana)
@@ -281,8 +305,9 @@ export default {
       this.thana.id = thana.id
       this.thana.name = thana.name
       this.thana.status = thana.status
-      this.districtUpdate = true
+      this.thanaUpdate = true
       this.$refs.districtForm.reset()
+      this.getThanas()
     }
   },
   created () {

@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <div class="row q-col-gutter-none">
-      <div class="col-md-4 col-sm-4 col-xs-12">
+      <div class="col-sm-6 col-xs-12">
         <q-card flat bordered>
           <q-card-section>
             <q-form ref="tagsForm">
@@ -26,7 +26,7 @@
             <q-card flat bordered>
               <q-card-section class="q-pa-sm">
                 <q-table
-                  flat
+                  flat dense
                   :table-header-style="{ backgroundColor: '#f0f0f0' }"
                   :data="tags"
                   :loading="tagsLoading"
@@ -37,71 +37,22 @@
                   <q-td slot="body-cell-update" slot-scope="props" :props="props">
                     <q-btn round icon="mdi-square-edit-outline" size="12px"
                       color="primary"
-                    ></q-btn>
+                    >
+                      <q-tooltip
+                        content-class='bg-yellow text-black shadow-3'
+                        transition-show='scale'
+                        transition-hide='scale'
+                        >
+                          Update tag.
+                      </q-tooltip>
+                    </q-btn>
                   </q-td>
                 </q-table>
               </q-card-section>
             </q-card>
         </q-card>
       </div>
-      <div class="col-md-4 col-sm-4 col-xs-12">
-        <q-card flat bordered>
-          <q-card-section>
-            <q-form ref="uomForm">
-              <div class="row q-col-gutter-sm">
-                <div class="col-sm-12 col-md-12 col-sx-12">
-                  <div class="row q-col-gutter-sm">
-                    <div class="col-sm-7 col-md-7 col-xs-12">
-                      <q-input dense no-error-icon
-                        v-model="uom.name"
-                        label="Measurement unit"
-                        lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Required']"
-                      ></q-input>
-                    </div>
-                    <div class="col-sm-5 col-md-5 col-xs-12">
-                      <q-input dense no-error-icon
-                        v-model="uom.short_name"
-                        label="Short"
-                        lazy-rules
-                        :rules="[ val => val && val.length > 0 || 'Required']"
-                      >
-                        <template v-slot:after>
-                          <q-btn dense @click="saveUom"
-                            icon="save" type="submit" color="primary">
-                          </q-btn>
-                        </template>
-                      </q-input>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </q-form>
-          </q-card-section>
-            <q-card flat bordered>
-              <q-card-section class="q-pa-sm">
-                <q-table
-                  flat
-                  :table-header-style="{ backgroundColor: '#f0f0f0' }"
-                  :data="uoms"
-                  :loading="uomsLoading"
-                  :columns="tableColumns"
-                  :pagination.sync="uomPagination"
-                  row-key="uoms"
-                >
-                <q-td slot="body-cell-update" slot-scope="props" :props="props">
-                  <q-btn
-                    icon="mdi-square-edit-outline"
-                    round size="12px"
-                    color="primary">
-                  </q-btn>
-                </q-td>
-              </q-table>
-              </q-card-section>
-            </q-card>
-        </q-card>
-      </div>
-      <div class="col-md-4 col-sm-4 col-xs-12">
+      <div class="col-sm-6 col-xs-12">
         <q-card flat bordered>
           <q-card-section>
             <q-form ref="capacityUnitForm">
@@ -138,7 +89,7 @@
           <q-card flat bordered>
             <q-card-section class="q-pa-sm">
               <q-table
-                flat
+                flat dense
                 :table-header-style="{ backgroundColor: '#f0f0f0' }"
                 :data="capacityUnits"
                 :columns="tableColumns"
@@ -150,7 +101,15 @@
                   <q-btn
                     icon="mdi-square-edit-outline"
                     round size="12px"
-                    color="primary">
+                    color="primary"
+                  >
+                    <q-tooltip
+                      content-class='bg-yellow text-black shadow-3'
+                      transition-show='scale'
+                      transition-hide='scale'
+                      >
+                        Update capacity.
+                    </q-tooltip>
                   </q-btn>
                 </q-td>
               </q-table>
@@ -276,7 +235,7 @@ export default {
     this.getTags()
     this.getUoms()
     this.getCapacityUnits()
-    this.$store.dispatch('pageTitle', 'Tags, UOMS & Measurement Units')
+    this.$store.dispatch('pageTitle', 'Tags and Capacity Units')
   }
 }
 </script>

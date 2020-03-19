@@ -2,31 +2,34 @@ import MainLayout from 'layouts/Main'
 import PrintLayout from 'layouts/Print'
 import Index from 'pages/Index'
 import Dashboard from 'pages/Dashboard'
-import Company from 'pages/Company'
+import Company from 'pages/master/Company'
 import SalesInvoice from 'pages/SalesInvoice'
 import SalesInvoiceList from 'pages/SalesInvoiceList'
 import SalesInvoiceDetail from 'pages/SalesInvoiceDetail'
 import SalesInvoiceUpdate from 'pages/SalesInvoiceUpdate'
-import PrintSalesInvoice from 'pages/PrintSalesInvoice'
-import Customer from 'pages/Customer'
+import Customer from 'pages/master/Customer'
 import CustomerDetail from 'pages/CustomerDetail'
-import Product from 'pages/Product'
+import Product from 'pages/master/Product'
 import ProductDetail from 'pages/ProductDetail'
 import PurchaseInvoice from 'pages/PurchaseInvoice'
 import PurchaseInvoiceDetail from 'pages/PurchaseInvoiceDetail'
 import PurchaseInvoiceList from 'pages/PurchaseInvoiceList'
 import PurchaseInvoiceUpdate from 'pages/PurchaseInvoiceUpdate'
-import Manufacturer from 'pages/Manufacturer'
-import Supplier from 'pages/Supplier'
+import Manufacturer from 'pages/master/Manufacturer'
+import Supplier from 'pages/master/Supplier'
 import SupplierDetail from 'pages/SupplierDetail'
-import TagsUom from 'pages/TagsUom'
-import Places from 'pages/Places'
+import TagsCapacity from 'pages/TagsCapacity'
+import Places from 'pages/master/Places'
 import User from 'pages/User'
 import Login from 'pages/Login'
-import UserProfile from 'pages/UserProfile'
+import UserProfile from 'pages//master/UserProfile'
 import AccHeads from 'pages/AccHeads'
 import AccVoucher from 'pages/AccVoucher'
 import Experiment from 'pages/Experiment'
+import PrintSalesInvoice from 'pages/reports/PrintSalesInvoice'
+import PurchaseReport from 'pages/reports/PurchaseReport'
+import SalesInvoiceReport from 'pages/reports/SalesInvoiceReport'
+import ProductStockReport from 'pages/reports/ProductStockReport'
 
 let routes = [
   {
@@ -82,6 +85,7 @@ let routes = [
           requiresAuth: true
         }
       },
+
       {
         name: 'customers',
         path: '/customers',
@@ -104,9 +108,9 @@ let routes = [
         component: Places
       },
       {
-        name: 'tags-and-uom',
-        path: '/tags-and-uoms',
-        component: TagsUom
+        name: 'tags-and-capacity',
+        path: '/tags-and-capacity',
+        component: TagsCapacity
       },
       {
         name: 'purchase_invoice',
@@ -237,6 +241,30 @@ let routes = [
         name: 'print-sales-invoice',
         path: '/print/sales-invoices/:id',
         component: PrintSalesInvoice
+      },
+      {
+        name: 'purchase-report',
+        path: '/purchase-report',
+        component: PurchaseReport,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        name: 'sales-invoice-report',
+        path: '/sales-invoice-report',
+        component: SalesInvoiceReport,
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
+        name: 'product-stock-report',
+        path: '/product-stock-report',
+        component: ProductStockReport,
+        meta: {
+          requiresAuth: true
+        }
       }
     ]
   }

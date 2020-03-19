@@ -10,7 +10,7 @@
         >
           <q-icon name="menu" />
         </q-btn>
-        <q-toolbar-title>
+        <q-toolbar-title class="desktop-only">
           E<span class="text-weight-bold">POS</span> - {{pageTitle}}
         </q-toolbar-title>
 
@@ -19,8 +19,9 @@
           icon="home" to="/"
         />
         <q-btn
-          stretch flat label="Sales"
+          stretch flat label="Sales" id="sales-invoice"
           icon="add_shopping_cart" to="/sales-invoice"
+          class="desktop-only"
         />
         <q-btn
           v-show="!this.$store.state.isLoggedIn"
@@ -76,14 +77,14 @@
             <q-item-label>Dashboard</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable to="/sales-invoice">
+        <!-- <q-item clickable to="/sales-invoice">
           <q-item-section avatar>
             <q-icon name="add_shopping_cart" />
           </q-item-section>
           <q-item-section>
             <q-item-label>New Sales</q-item-label>
           </q-item-section>
-        </q-item>
+        </q-item> -->
         <q-item clickable to="/sales-invoice-list">
           <q-item-section avatar>
             <q-icon name="mdi-view-list" />
@@ -92,14 +93,14 @@
             <q-item-label>Sales Invoices</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable to="/purchase-invoice">
+        <!-- <q-item clickable to="/purchase-invoice">
           <q-item-section avatar>
             <q-icon name="mdi-plus-outline" />
           </q-item-section>
           <q-item-section>
             <q-item-label>New Purchase</q-item-label>
           </q-item-section>
-        </q-item>
+        </q-item> -->
         <q-item clickable to="/purchase-invoice-list">
           <q-item-section avatar>
             <q-icon name="mdi-receipt" />
@@ -122,20 +123,36 @@
           label="Reports"
           icon="mdi-file-cabinet"
         >
-          <q-item clickable to="/purchase-invoice-list">
+          <!-- <q-item clickable to="/purchase-invoice-list">
             <q-item-section avatar>
               <q-icon name="mdi-file-chart" />
             </q-item-section>
             <q-item-section>
               <q-item-label>Sales Report</q-item-label>
             </q-item-section>
+          </q-item> -->
+          <q-item clickable to="/sales-invoice-report">
+            <q-item-section avatar>
+              <q-icon name="mdi-receipt" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Invoice List (Sales)</q-item-label>
+            </q-item-section>
           </q-item>
-          <q-item clickable to="/">
+          <q-item clickable to="/purchase-report">
             <q-item-section avatar>
               <q-icon name="mdi-receipt" />
             </q-item-section>
             <q-item-section>
               <q-item-label>Purchase Report</q-item-label>
+            </q-item-section>
+          </q-item>
+          <q-item clickable to="/product-stock-report">
+            <q-item-section avatar>
+              <q-icon name="mdi-receipt" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label>Product Stock Report</q-item-label>
             </q-item-section>
           </q-item>
         </q-expansion-item>
@@ -145,7 +162,8 @@
           label="Master"
           icon="mdi-database"
         >
-          <q-item clickable to="/acc-voucher">
+
+          <!-- <q-item clickable to="/acc-voucher">
             <q-item-section avatar>
               <q-icon name="money" />
             </q-item-section>
@@ -160,7 +178,7 @@
             <q-item-section>
               <q-item-label>Account Heads</q-item-label>
             </q-item-section>
-          </q-item>
+          </q-item> -->
           <q-item clickable to="/products">
             <q-item-section avatar>
               <q-icon name="mdi-bag-personal" />
@@ -185,12 +203,12 @@
               <q-item-label>Manufacturers</q-item-label>
             </q-item-section>
           </q-item>
-          <q-item clickable to="/tags-and-uoms">
+          <q-item clickable to="/tags-and-capacity">
             <q-item-section avatar>
               <q-icon name="mdi-tag-heart-outline" />
             </q-item-section>
             <q-item-section>
-              <q-item-label>Tags and UOM</q-item-label>
+              <q-item-label>Tags and Capacity</q-item-label>
             </q-item-section>
           </q-item>
           <q-item clickable to="/places">

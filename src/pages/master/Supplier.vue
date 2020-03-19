@@ -106,12 +106,12 @@
                   <div class="row q-col-gutter-sm q-pl-sm q-mt-xs">
                     <q-btn
                       @click="saveSupplier"
-                      label="Save" icon="save"
+                      label="Save" icon="save" size="sm"
                       color="primary" class="q-mt-sm">
                     </q-btn>
                     <q-btn
                       @click="clearForm"
-                      label="Clear" icon="clear_all"
+                      label="Clear" icon="clear_all" size="sm"
                       color="grey" class="q-mt-sm q-ml-sm">
                     </q-btn>
                   </div>
@@ -123,7 +123,7 @@
           <q-card square flat bordered>
             <q-card-section class="q-pa-sm">
               <q-table
-                flat
+                flat dense
                 :table-header-style="{ backgroundColor: '#f0f0f0' }"
                 :filter="filter"
                 :data="suppliers"
@@ -132,6 +132,16 @@
                 row-key="id"
                 :pagination.sync="pagination"
               >
+              <template v-slot:top-left>
+                <q-btn
+                  size="12px" color="primary" outline
+                  label="Reload"
+                  icon="mdi-refresh"
+                  class="q-mb-none"
+                  @click="getSuppliers"
+                >
+                </q-btn>
+              </template>
               <template v-slot:top-right>
                 <q-input dense debounce="300" color="primary" v-model="filter">
                   <template v-slot:append>
@@ -145,19 +155,37 @@
                   @click="showForm = !showForm">
                 </q-btn>
               </template>
+              <q-td slot="body-cell-status" slot-scope="props" :props="props">
+                <q-checkbox dense :value="!!props.row.status"></q-checkbox>
+              </q-td>
               <q-td slot="body-cell-update" slot-scope="props" :props="props">
                 <q-btn-group>
                   <q-btn
                     dense color="primary" icon="visibility"
-                    class="q-px-sm"
+                    class="q-pa-none"
                     :to="{name: 'supplier-detail', params: {id: props.value}}"
-                  />
+                  >
+                    <q-tooltip
+                        content-class='bg-yellow text-black shadow-3'
+                        transition-show='scale'
+                        transition-hide='scale'
+                      >
+                        View supplier details.
+                    </q-tooltip>
+                  </q-btn>
                   <q-btn
                     dense color="secondary"
                     icon="mdi-square-edit-outline"
-                    class="q-px-sm"
+                    class="q-pa-none"
                     @click="updateSupplier(props.row)"
                   >
+                    <q-tooltip
+                        content-class='bg-yellow text-black shadow-3'
+                        transition-show='scale'
+                        transition-hide='scale'
+                      >
+                        Update supplier record.
+                    </q-tooltip>
                   </q-btn>
                 </q-btn-group>
               </q-td>
@@ -208,6 +236,7 @@ export default {
         sortable: true
       },
       { name: 'email', align: 'left', label: 'Email', field: 'email', sortable: true },
+      { name: 'status', align: 'center', label: 'Status', field: 'status', sortable: true },
       { name: 'update', align: 'right', field: 'id' }
     ],
     thanas: [],
@@ -227,7 +256,7 @@ export default {
               this.$q.notify({
                 color: 'green',
                 textColor: 'white',
-                position: 'bottom-left',
+                position: 'bottom-right',
                 message: 'Save successful'
               })
               this.clearForm()
@@ -235,7 +264,7 @@ export default {
               this.$q.notify({
                 color: 'red',
                 textColor: 'white',
-                position: 'bottom-left',
+                position: 'bottom-right',
                 message: 'Error saving record'
               })
             }
@@ -317,7 +346,7 @@ export default {
       this.$refs.supplierForm.resetValidation()
     },
     updateSupplier (supplier) {
-      console.log(supplier)
+      // console.log(supplier)
       this.updateMode = true
       this.showForm = true
       this.supplier.id = supplier.id
